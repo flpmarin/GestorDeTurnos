@@ -23,17 +23,29 @@ public class DepartamentoDAO {   // Obtener un autor por su ID
     }
     public List<Departamento> obtenerTodosDepartamentos() {
         String sql = "SELECT * FROM Departamento";
+        List<Departamento> departamentos = new java.util.ArrayList<>();
         try (Connection conn = Conexion.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql);
              ResultSet rs = pstmt.executeQuery()) {
-            List<Departamento> departamentos = new java.util.ArrayList<>();
             while (rs.next()) {
                 departamentos.add(new Departamento(rs.getInt("id"), rs.getString("nombre")));
             }
-            return departamentos;
         } catch (SQLException e) {
             e.printStackTrace();
-            return null;
+        }
+        return departamentos;
+    }
+
+    public boolean eliminarDepartamento(int id) {
+        String sql = "DELETE FROM Departamento WHERE id = ?";
+        try (Connection conn = Conexion.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, id);
+            return pstmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
         }
     }
+
 }

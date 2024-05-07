@@ -1,6 +1,5 @@
 package com.turnos.ui;
 
-import com.turnos.negocio.GestorTurnos;
 import com.turnos.dto.Departamento;
 import com.turnos.dao.DepartamentoDAO;
 import javax.swing.*;
@@ -9,7 +8,7 @@ import java.util.List;
 
 public class TurnosGUI extends JFrame {
     private DepartamentoDAO departamentoDAO = new DepartamentoDAO();
-    private JComboBox<Departamento> comboDepartamentoModificar, comboDepartamentoEliminar;
+    private JComboBox<Departamento> comboDepartamentoEliminar;
     private JTextField txtDepartamentoId, txtDepartamentoNombre;
 
     public TurnosGUI() {
@@ -18,7 +17,7 @@ public class TurnosGUI extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
         initUI();
-        
+        cargarDepartamentos();
 
     }
 
@@ -33,6 +32,7 @@ public class TurnosGUI extends JFrame {
         add(txtDepartamentoNombre);
 
         JPanel panelAgregar = new JPanel(new GridLayout(0, 2));
+
         txtDepartamentoNombre = new JTextField();
         JButton btnAgregarDepartamento = new JButton("Agregar Departamento");
         btnAgregarDepartamento.addActionListener(e -> agregarDepartamento());
@@ -43,14 +43,29 @@ public class TurnosGUI extends JFrame {
 
         add(panelAgregar, BorderLayout.CENTER);
 
+        // Sección de eliminar departamentos
+        JPanel panelEliminar = new JPanel(new GridLayout(0, 2));
+        comboDepartamentoEliminar = new JComboBox<>();
+        JButton btnEliminarDepartamento = new JButton("Eliminar Departamento");
+        btnEliminarDepartamento.addActionListener(e -> eliminarDepartamento());
+        panelEliminar.add(new JLabel("Departamento:"));
+        panelEliminar.add(comboDepartamentoEliminar);
+        panelEliminar.add(new JLabel(""));
+        panelEliminar.add(btnEliminarDepartamento);
+
+        // Añadir los paneles a tabbedPane
+        tabbedPane.add("Agregar", panelAgregar);
+        tabbedPane.add("Eliminar", panelEliminar);
+
+        // Añadir tabbedPane a la GUI
+        add(tabbedPane, BorderLayout.CENTER);;
+
     }
 
-    private void cargarDepartamentos() {
+    public void cargarDepartamentos() {
         List<Departamento> departamentos = departamentoDAO.obtenerTodosDepartamentos();
-        comboDepartamentoModificar.removeAllItems();
         comboDepartamentoEliminar.removeAllItems();
         for (Departamento departamento : departamentos) {
-            comboDepartamentoModificar.addItem(departamento);
             comboDepartamentoEliminar.addItem(departamento);
         }
     }
@@ -66,6 +81,18 @@ public class TurnosGUI extends JFrame {
                 JOptionPane.showMessageDialog(this, "Error al agregar el departamento.");
             }
             txtDepartamentoNombre.setText("");
+        }
+    }
+
+    private void eliminarDepartamento() {
+        Departamento departamento = (Departamento) comboDepartamentoEliminar.getSelectedItem();
+        if (departamento != null) {
+            if (departamentoDAO.eliminarDepartamento(departamento.getId())) {
+                JOptionPane.showMessageDialog(this, "Departamento eliminado exitosamente.");
+                cargarDepartamentos(); // Recargar lista de departamentos
+            } else {
+                JOptionPane.showMessageDialog(this, "Error al eliminar el departamento.");
+            }
         }
     }
 

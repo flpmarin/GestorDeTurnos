@@ -24,5 +24,9 @@ public class Departamento {
         this.nombre = nombre;
     }
 
+    @Override
+    public String toString() {
+        return nombre;
+    }
     
 }

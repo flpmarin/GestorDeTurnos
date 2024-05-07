@@ -1,6 +1,5 @@
 package com.turnos.negocio;
 
-
 import com.turnos.dao.DepartamentoDAO;
 import com.turnos.dto.Departamento;
 
@@ -12,6 +11,10 @@ public class GestorTurnos {
     // Métodos para departamentos
     public boolean agregarDepartamento(Departamento departamento) {
         return departamentoDAO.agregarDepartamento(departamento);
+    }
+
+    public boolean eliminarDepartamento(int id) {
+        return departamentoDAO.eliminarDepartamento(id);
     }
 
     

@@ -8,8 +8,8 @@ import java.util.List;
 
 public class TurnosGUI extends JFrame {
     private DepartamentoDAO departamentoDAO = new DepartamentoDAO();
-    private JComboBox<Departamento> comboDepartamentoEliminar;
-    private JTextField txtDepartamentoId, txtDepartamentoNombre;
+    private JComboBox<Departamento> comboDepartamentoEliminar,comboDepartamentoModificar;
+    private JTextField txtDepartamentoId, txtDepartamentoNombre,txtModificarNombreDepartamento;
 
     public TurnosGUI() {
         super("Sistema de Gestión de Turnos");
@@ -43,7 +43,7 @@ public class TurnosGUI extends JFrame {
 
         add(panelAgregar, BorderLayout.CENTER);
 
-        // Sección de eliminar departamentos
+        // pestaña de eliminar departamentos
         JPanel panelEliminar = new JPanel(new GridLayout(0, 2));
         comboDepartamentoEliminar = new JComboBox<>();
         JButton btnEliminarDepartamento = new JButton("Eliminar Departamento");
@@ -53,20 +53,37 @@ public class TurnosGUI extends JFrame {
         panelEliminar.add(new JLabel(""));
         panelEliminar.add(btnEliminarDepartamento);
 
+        // Pestaña de modificar departamentos
+        JPanel panelModificar = new JPanel(new GridLayout(0, 2));
+        comboDepartamentoModificar = new JComboBox<>();
+        txtModificarNombreDepartamento = new JTextField();
+        JButton btnModificarDepartamento = new JButton("Modificar Departamento");
+        btnModificarDepartamento.addActionListener(e -> ModificarDepartamento());
+        panelModificar.add(new JLabel("Departamento:"));
+        panelModificar.add(comboDepartamentoModificar);
+        panelModificar.add(new JLabel(""));
+        panelModificar.add(new JLabel("Nuevo Nombre:"));
+        panelModificar.add(btnModificarDepartamento);
+        panelModificar.add(txtModificarNombreDepartamento);
+        
+
         // Añadir los paneles a tabbedPane
         tabbedPane.add("Agregar", panelAgregar);
         tabbedPane.add("Eliminar", panelEliminar);
+        tabbedPane.add("Modificar", panelModificar);
 
         // Añadir tabbedPane a la GUI
-        add(tabbedPane, BorderLayout.CENTER);;
+        add(tabbedPane, BorderLayout.CENTER);
 
     }
 
     public void cargarDepartamentos() {
         List<Departamento> departamentos = departamentoDAO.obtenerTodosDepartamentos();
         comboDepartamentoEliminar.removeAllItems();
+        comboDepartamentoModificar.removeAllItems(); // Limpia los items de comboDepartamentoModificar
         for (Departamento departamento : departamentos) {
             comboDepartamentoEliminar.addItem(departamento);
+            comboDepartamentoModificar.addItem(departamento); // Agrega los departamentos a comboDepartamentoModificar
         }
     }
 
@@ -92,6 +109,21 @@ public class TurnosGUI extends JFrame {
                 cargarDepartamentos(); // Recargar lista de departamentos
             } else {
                 JOptionPane.showMessageDialog(this, "Error al eliminar el departamento.");
+            }
+        }
+    }
+
+
+    private void ModificarDepartamento() {
+        Departamento departamento = (Departamento) comboDepartamentoModificar.getSelectedItem();
+        String nuevoNombre = txtModificarNombreDepartamento.getText();
+        if (departamento != null && !nuevoNombre.isEmpty()) {
+            departamento.setNombre(nuevoNombre);
+            if (departamentoDAO.modificarDepartamento(departamento)) {
+                JOptionPane.showMessageDialog(this, "Departamento modificado exitosamente.");
+                cargarDepartamentos(); // Recargar lista de departamentos
+            } else {
+                JOptionPane.showMessageDialog(this, "Error al modificar el departamento.");
             }
         }
     }

@@ -48,4 +48,21 @@ public class DepartamentoDAO {   // Obtener un autor por su ID
         }
     }
 
+    // Actualizar un departamento
+    public boolean modificarDepartamento(Departamento departamento) {
+        String sql = "UPDATE Departamento SET nombre = ? WHERE id = ?";
+        try (Connection conn = Conexion.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, departamento.getNombre());
+            pstmt.setInt(2, departamento.getId());
+            return pstmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+        
+  
+
 }

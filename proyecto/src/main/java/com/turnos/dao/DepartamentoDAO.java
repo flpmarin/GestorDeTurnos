@@ -8,12 +8,13 @@ import java.util.List;
 
 import com.turnos.dto.Departamento;
 
-public class DepartamentoDAO {   // Obtener un autor por su ID
+public class DepartamentoDAO {
 
-     public boolean agregarDepartamento(Departamento departamento) {
+    
+    public boolean crearDepartamento(Departamento departamento) {
         String sql = "INSERT INTO Departamento (nombre) VALUES (?)";
         try (Connection conn = Conexion.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, departamento.getNombre());
             return pstmt.executeUpdate() > 0;
         } catch (SQLException e) {
@@ -21,12 +22,13 @@ public class DepartamentoDAO {   // Obtener un autor por su ID
             return false;
         }
     }
+
     public List<Departamento> obtenerTodosDepartamentos() {
         String sql = "SELECT * FROM Departamento";
         List<Departamento> departamentos = new java.util.ArrayList<>();
         try (Connection conn = Conexion.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql);
-             ResultSet rs = pstmt.executeQuery()) {
+                PreparedStatement pstmt = conn.prepareStatement(sql);
+                ResultSet rs = pstmt.executeQuery()) {
             while (rs.next()) {
                 departamentos.add(new Departamento(rs.getInt("id"), rs.getString("nombre")));
             }
@@ -39,7 +41,7 @@ public class DepartamentoDAO {   // Obtener un autor por su ID
     public boolean eliminarDepartamento(int id) {
         String sql = "DELETE FROM Departamento WHERE id = ?";
         try (Connection conn = Conexion.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, id);
             return pstmt.executeUpdate() > 0;
         } catch (SQLException e) {
@@ -52,7 +54,7 @@ public class DepartamentoDAO {   // Obtener un autor por su ID
     public boolean modificarDepartamento(Departamento departamento) {
         String sql = "UPDATE Departamento SET nombre = ? WHERE id = ?";
         try (Connection conn = Conexion.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, departamento.getNombre());
             pstmt.setInt(2, departamento.getId());
             return pstmt.executeUpdate() > 0;
@@ -61,8 +63,5 @@ public class DepartamentoDAO {   // Obtener un autor por su ID
             return false;
         }
     }
-
-        
-  
 
 }

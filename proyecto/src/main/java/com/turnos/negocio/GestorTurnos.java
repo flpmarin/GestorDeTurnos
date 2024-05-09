@@ -9,8 +9,8 @@ public class GestorTurnos {
     private DepartamentoDAO departamentoDAO = new DepartamentoDAO();
 
     // Métodos para departamentos
-    public boolean agregarDepartamento(Departamento departamento) {
-        return departamentoDAO.agregarDepartamento(departamento);
+    public boolean crearDepartamento(Departamento departamento) {
+        return departamentoDAO.crearDepartamento(departamento);
     }
 
     public boolean eliminarDepartamento(int id) {

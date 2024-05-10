@@ -11,8 +11,8 @@ import com.turnos.dto.Departamento;
 public class DepartamentoDAO {
 
     
-    public boolean crearDepartamento(Departamento departamento) {
-        String sql = "INSERT INTO Departamento (nombre) VALUES (?)";
+    public boolean agregarDepartamento(Departamento departamento) {
+        String sql = "INSERT INTO departamentos (nombre) VALUES (?)";
         try (Connection conn = Conexion.getConnection();
                 PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, departamento.getNombre());

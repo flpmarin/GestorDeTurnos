@@ -24,7 +24,7 @@ public class DepartamentoDAO {
     }
 
     public List<Departamento> obtenerTodosDepartamentos() {
-        String sql = "SELECT * FROM Departamento";
+        String sql = "SELECT * FROM departamentos";
         List<Departamento> departamentos = new java.util.ArrayList<>();
         try (Connection conn = Conexion.getConnection();
                 PreparedStatement pstmt = conn.prepareStatement(sql);
@@ -39,7 +39,7 @@ public class DepartamentoDAO {
     }
 
     public boolean eliminarDepartamento(int id) {
-        String sql = "DELETE FROM Departamento WHERE id = ?";
+        String sql = "DELETE FROM departamentos WHERE id = ?";
         try (Connection conn = Conexion.getConnection();
                 PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, id);
@@ -52,7 +52,7 @@ public class DepartamentoDAO {
 
     // Actualizar un departamento
     public boolean modificarDepartamento(Departamento departamento) {
-        String sql = "UPDATE Departamento SET nombre = ? WHERE id = ?";
+        String sql = "UPDATE departamentos SET nombre = ? WHERE id = ?";
         try (Connection conn = Conexion.getConnection();
                 PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, departamento.getNombre());

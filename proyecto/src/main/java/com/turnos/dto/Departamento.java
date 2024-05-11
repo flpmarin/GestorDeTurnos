@@ -1,21 +1,20 @@
 package com.turnos.dto;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.LinkedHashMap;
 
+// LinkedHashMap permite mantener el orden de inserción, asi como un acceso rápido a los elementos por su clave.
 public class Departamento {
     private int id;
     private String nombre;
-    private Map<Integer, Trabajador> trabajadores;
-
-    
+    private LinkedHashMap<Integer, Trabajador> trabajadores; 
+    private LinkedHashMap<Integer, Posicion> posiciones;
 
     public Departamento(int id, String nombre) {
         this.id = id;
         this.nombre = nombre;
-        this.trabajadores = new HashMap<>();
-
+        this.trabajadores = new LinkedHashMap<>();
     }
+
     public Departamento() {
     }
     public int getId() {
@@ -35,8 +34,16 @@ public class Departamento {
         this.trabajadores.put(trabajador.getId(), trabajador);
     }
 
-    public Map<Integer, Trabajador> getTrabajadores() {
+    public LinkedHashMap<Integer, Trabajador> getTrabajadores() {
         return this.trabajadores;
+    }
+  
+    public void agregarPosicion(Posicion posicion) {
+        this.posiciones.put(posicion.getId(), posicion);
+    }
+
+    public LinkedHashMap<Integer, Posicion> getPosiciones() {
+        return this.posiciones;
     }
 
     @Override

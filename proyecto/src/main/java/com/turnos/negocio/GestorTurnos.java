@@ -4,6 +4,8 @@ import java.util.List;
 
 import com.turnos.dao.DepartamentoDAO;
 import com.turnos.dto.Departamento;
+import com.turnos.dao.PosicionDAO;
+import com.turnos.dto.Posicion;
 import com.turnos.dao.TrabajadorDAO;
 import com.turnos.dto.Trabajador;
 
@@ -13,6 +15,7 @@ import com.turnos.dto.Trabajador;
 public class GestorTurnos {
     private DepartamentoDAO departamentoDAO = new DepartamentoDAO();
     private TrabajadorDAO trabajadorDAO = new TrabajadorDAO();
+    private PosicionDAO posicionDAO = new PosicionDAO();
 
    
     // Métodos para departamentos
@@ -48,4 +51,23 @@ public class GestorTurnos {
     public List<Trabajador> obtenerTodosTrabajadores() {
         return trabajadorDAO.obtenerTodosTrabajadores();
     }
+
+    // Métodos para posiciones
+    public boolean agregarPosicion(Posicion posicion) {
+        return posicionDAO.agregarPosicion(posicion);
+    }
+
+    public boolean eliminarPosicion(int id) {
+        return posicionDAO.eliminarPosicion(id);
+    }
+
+    public boolean modificarPosicion(Posicion posicion) {
+        return posicionDAO.modificarPosicion(posicion);
+    }
+
+    public List<Posicion> obtenerTodosPosiciones() {
+        return posicionDAO.obtenerTodosPosiciones();
+    }
+
+    
 }

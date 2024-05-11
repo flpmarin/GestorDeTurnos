@@ -2,6 +2,7 @@ package com.turnos.ui;
 
 import com.turnos.dto.Departamento;
 import com.turnos.dto.Trabajador;
+import com.turnos.dto.Posicion;
 import com.turnos.negocio.GestorTurnos;
 import javax.swing.*;
 import java.awt.*;
@@ -13,7 +14,8 @@ public class TurnosGUI extends JFrame {
                                                             // negocio de la lógica de acceso a datos.
     private JComboBox<Departamento> comboDepartamentoEliminar, comboDepartamentoModificar, comboDepartamentos;
     private JComboBox<Trabajador> comboTrabajadorEliminar, comboTrabajadorModificar;
-    private JTextField txtDepartamentoNombre, txtModificarNombreDepartamento, txtTrabajadorNombre,txtModificarNombreTrabajador;
+    private JComboBox<Posicion> comboPosicionEliminar, comboPosicionModificar;
+    private JTextField txtDepartamentoNombre, txtModificarNombreDepartamento, txtTrabajadorNombre,txtModificarNombreTrabajador, txtPosicionNombre, txtModificarNombrePosicion;
     private CardLayout cardLayout = new CardLayout();
     private JPanel cards = new JPanel(cardLayout);
     private static final String MSG_EXITO = "%s exitosamente.";
@@ -27,6 +29,7 @@ public class TurnosGUI extends JFrame {
         initUI();
         cargarDepartamentos();
         cargarTrabajadores();
+        cargarPosiciones();
     }
 
     private void initUI() {
@@ -37,6 +40,10 @@ public class TurnosGUI extends JFrame {
         initAgregarTrabajadorPanel();
         initEliminarTrabajadorPanel();
         initModificarTrabajadorPanel();
+
+        initAgregarPosicionPanel();
+        initEliminarPosicionPanel();
+        initModificarPosicionPanel();
 
         initMenu();
         add(cards, BorderLayout.CENTER);
@@ -75,6 +82,21 @@ public class TurnosGUI extends JFrame {
         submenuTrabajadores.add(miEliminarTrabajador);
         submenuTrabajadores.add(miModificarTrabajador);
         menu.add(submenuTrabajadores);
+
+        // Submenu para posiciones
+        JMenu submenuPosiciones = new JMenu("Posiciones");
+        JMenuItem miAgregarPosicion = new JMenuItem("Agregar");
+        JMenuItem miEliminarPosicion = new JMenuItem("Eliminar");
+        JMenuItem miModificarPosicion = new JMenuItem("Modificar");
+
+        miAgregarPosicion.addActionListener(e -> cardLayout.show(cards, "AgregarPosicion"));
+        miEliminarPosicion.addActionListener(e -> cardLayout.show(cards, "EliminarPosicion"));
+        miModificarPosicion.addActionListener(e -> cardLayout.show(cards, "ModificarPosicion"));
+
+        submenuPosiciones.add(miAgregarPosicion);
+        submenuPosiciones.add(miEliminarPosicion);
+        submenuPosiciones.add(miModificarPosicion);
+        menu.add(submenuPosiciones);
 
         menuBar.add(menu);
         setJMenuBar(menuBar);
@@ -276,6 +298,99 @@ public class TurnosGUI extends JFrame {
             trabajador.setNombre(nuevoNombre);
             boolean resultado = gestorTurnos.modificarTrabajador(trabajador);
             manejarRespuestaOperacion(resultado, "modificar el trabajador", this::cargarTrabajadores);
+        }
+    }
+        
+    // seccion posiciones
+
+    // panel para agregar una posicion
+    private void initAgregarPosicionPanel() {
+        JPanel panelAgregar = new JPanel(new GridLayout(0, 2));
+        comboDepartamentos = new JComboBox<>();// cambio
+        txtTrabajadorNombre = new JTextField();
+        JButton btnAgregarTrabajador = new JButton("Agregar Trabajador");
+        btnAgregarTrabajador.addActionListener(e -> agregarPosicion());
+        panelAgregar.add(new JLabel("Nombre:"));
+        panelAgregar.add(txtTrabajadorNombre);
+        panelAgregar.add(new JLabel("Departamento:")); // Etiqueta para el JComboBox
+        panelAgregar.add(comboDepartamentos); // Agrega el JComboBox al panel
+        panelAgregar.add(new JLabel()); // Componente invisible para ocupar la celda
+        panelAgregar.add(btnAgregarTrabajador);
+        cards.add(panelAgregar, "AgregarPosicion");
+    }
+
+    // panel para eliminar una posicion
+    private void initEliminarPosicionPanel() {
+        JPanel panelEliminar = new JPanel(new GridLayout(0, 2));
+        comboPosicionEliminar = new JComboBox<>();
+        JButton btnEliminarPosicion = new JButton("Eliminar Posicion");
+        btnEliminarPosicion.addActionListener(e -> eliminarPosicion());
+        panelEliminar.add(new JLabel("Posicion:"));
+        panelEliminar.add(comboPosicionEliminar);
+        panelEliminar.add(new JLabel()); // Componente invisible para ocupar la celda
+        panelEliminar.add(btnEliminarPosicion);
+        cards.add(panelEliminar, "EliminarPosicion");
+    }
+
+    // panel para modificar una posicion
+    private void initModificarPosicionPanel() {
+        JPanel panelModificar = new JPanel(new GridLayout(0, 2));
+        comboPosicionModificar = new JComboBox<>();
+        txtModificarNombrePosicion = new JTextField();
+        JButton btnModificarPosicion = new JButton("Modificar Posicion");
+        btnModificarPosicion.addActionListener(e -> modificarPosicion());
+        panelModificar.add(new JLabel("Posición:"));
+        panelModificar.add(comboPosicionModificar);
+        panelModificar.add(new JLabel("Nuevo Nombre:"));
+        panelModificar.add(txtModificarNombrePosicion);
+        panelModificar.add(new JLabel()); // Componente invisible para ocupar la celda
+        panelModificar.add(btnModificarPosicion);
+        cards.add(panelModificar, "ModificarPosicion");
+    }
+
+    // Método para cargar las posiciones en los combos
+    public void cargarPosiciones() {
+        try {
+            List<Posicion> posiciones = gestorTurnos.obtenerTodosPosiciones();
+            comboPosicionEliminar.removeAllItems();
+            comboPosicionModificar.removeAllItems(); // Limpia los items de comboPosicionModificar
+            for (Posicion posicion : posiciones) {
+                comboPosicionEliminar.addItem(posicion);
+                comboPosicionModificar.addItem(posicion);
+            }
+        } catch (Exception e) {
+            e.printStackTrace(); // Imprime la pila de llamadas de la excepción
+            JOptionPane.showMessageDialog(this, "Error al cargar las posiciones: " + e.getMessage());
+        }
+    }
+
+    // Métodos para agregar una posición, mostrando un JComboBox con los trabajadores disponibles para asignar a la posición y permitiendo seleccionar uno y obtener su id para asociarlo a la posición.
+    private void agregarPosicion() {
+        String nombre = txtPosicionNombre.getText();
+        Departamento departamentoSeleccionado = (Departamento) comboPosicionEliminar.getSelectedItem();
+        if (!nombre.isEmpty() && departamentoSeleccionado != null) {
+            Posicion posicion = new Posicion(0, nombre, departamentoSeleccionado.getId());
+            boolean resultado = gestorTurnos.agregarPosicion(posicion);
+            manejarRespuestaOperacion(resultado, "agregar la posición", this::cargarPosiciones);
+            txtPosicionNombre.setText("");
+        }
+    }
+
+    private void eliminarPosicion() {
+        Posicion posicion = (Posicion) comboPosicionEliminar.getSelectedItem();
+        if (posicion != null) {
+            boolean resultado = gestorTurnos.eliminarPosicion(posicion.getId());
+            manejarRespuestaOperacion(resultado, "eliminar la posición", this::cargarPosiciones);
+        }
+    }
+
+    private void modificarPosicion() {
+        Posicion posicion = (Posicion) comboPosicionModificar.getSelectedItem();
+        String nuevoNombre = txtModificarNombrePosicion.getText();
+        if (posicion != null && !nuevoNombre.isEmpty()) {
+            posicion.setNombre(nuevoNombre);
+            boolean resultado = gestorTurnos.modificarPosicion(posicion);
+            manejarRespuestaOperacion(resultado, "modificar la posición", this::cargarPosiciones);
         }
     }
 

@@ -13,9 +13,12 @@ public class Departamento {
         this.id = id;
         this.nombre = nombre;
         this.trabajadores = new LinkedHashMap<>();
+        this.posiciones = new LinkedHashMap<>();
     }
 
     public Departamento() {
+        this.trabajadores = new LinkedHashMap<>();
+        this.posiciones = new LinkedHashMap<>();
     }
     public int getId() {
         return id;
@@ -39,7 +42,9 @@ public class Departamento {
     }
   
     public void agregarPosicion(Posicion posicion) {
-        this.posiciones.put(posicion.getId(), posicion);
+        if (this.posiciones != null) {
+            this.posiciones.put(posicion.getId(), posicion);
+        }
     }
 
     public LinkedHashMap<Integer, Posicion> getPosiciones() {
@@ -48,7 +53,7 @@ public class Departamento {
 
     @Override
     public String toString() {
-        return nombre;
+        return this.nombre;
     }
    
     

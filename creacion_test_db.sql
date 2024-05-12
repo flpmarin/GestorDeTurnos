@@ -1,4 +1,7 @@
 -- Active: 1710450499825@@127.0.0.1@3306
+CREATE DATABASE IF NOT EXISTS test_db CHARACTER SET 'utf8mb4' COLLATE utf8mb4_unicode_ci;
+
+
 use test_db;
 CREATE TABLE IF NOT EXISTS departamentos (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -56,10 +59,10 @@ CREATE TABLE IF NOT EXISTS preferencias (
 
 CREATE TABLE IF NOT EXISTS trabajadores_posiciones (
     trabajador_id INT,
-    puesto_id INT,
-    PRIMARY KEY (trabajador_id, puesto_id),
+    posicion_id INT,
+    PRIMARY KEY (trabajador_id, posicion_id),
     FOREIGN KEY (trabajador_id) REFERENCES trabajadores(id),
-    FOREIGN KEY (puesto_id) REFERENCES posiciones(id)
+    FOREIGN KEY (posicion_id) REFERENCES posiciones(id)
 );
 
 

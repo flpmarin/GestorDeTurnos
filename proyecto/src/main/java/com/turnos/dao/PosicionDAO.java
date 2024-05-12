@@ -5,9 +5,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.turnos.dto.Posicion;
+import com.turnos.dto.Trabajador;
 
 public class PosicionDAO {
 
@@ -65,6 +67,49 @@ public class PosicionDAO {
         try (Connection conn = Conexion.getConnection();
                 PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, posicion.getNombre());
+            pstmt.setInt(2, posicion.getId());
+            return pstmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public List<Posicion> obtenerPosicionesPorDepartamento(int idDepartamento) {
+        String sql = "SELECT * FROM posiciones WHERE departamento_id = ?";
+        List<Posicion> posiciones = new ArrayList<>();
+        try (Connection conn = Conexion.getConnection();
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, idDepartamento);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    posiciones.add(new Posicion(rs.getInt("id"), rs.getString("nombre"), rs.getInt("departamento_id")));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return posiciones;
+    }
+
+    public boolean asociarTrabajadorAPosicion(Trabajador trabajador, Posicion posicion) {
+        String sql = "INSERT INTO trabajadores_posiciones (trabajador_id, posicion_id) VALUES (?, ?)";
+        try (Connection conn = Conexion.getConnection();
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, trabajador.getId());
+            pstmt.setInt(2, posicion.getId());
+            return pstmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean retirarTrabajadorDePosicion(Trabajador trabajador, Posicion posicion) {
+        String sql = "DELETE FROM trabajadores_posiciones WHERE trabajador_id = ? AND posicion_id = ?";
+        try (Connection conn = Conexion.getConnection();
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, trabajador.getId());
             pstmt.setInt(2, posicion.getId());
             return pstmt.executeUpdate() > 0;
         } catch (SQLException e) {

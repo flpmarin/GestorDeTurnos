@@ -38,6 +38,23 @@ public class DepartamentoDAO {
         return departamentos;
     }
 
+public Departamento getDepartamentoPorId(int id) {
+    String sql = "SELECT * FROM departamentos WHERE id = ?";
+    Departamento departamento = null;
+    try (Connection conn = Conexion.getConnection();
+            PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        pstmt.setInt(1, id);
+        try (ResultSet rs = pstmt.executeQuery()) {
+            if (rs.next()) {
+                departamento = new Departamento(rs.getInt("id"), rs.getString("nombre"));
+            }
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+    return departamento;
+}
+
     public boolean eliminarDepartamento(int id) {
         String sql = "DELETE FROM departamentos WHERE id = ?";
         try (Connection conn = Conexion.getConnection();

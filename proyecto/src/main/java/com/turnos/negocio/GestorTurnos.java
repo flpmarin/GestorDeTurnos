@@ -8,12 +8,15 @@ import com.turnos.dao.PosicionDAO;
 import com.turnos.dto.Posicion;
 import com.turnos.dao.TrabajadorDAO;
 import com.turnos.dto.Trabajador;
+import com.turnos.dao.TurnoDAO;
+import com.turnos.dto.Turno;
 
 //esta clase es la que se comunica con la base de datos
 public class GestorTurnos {
     private DepartamentoDAO departamentoDAO = new DepartamentoDAO();
     private TrabajadorDAO trabajadorDAO = new TrabajadorDAO();
     private PosicionDAO posicionDAO = new PosicionDAO();
+    private TurnoDAO turnoDAO = new TurnoDAO();
 
     // Métodos para departamentos
     public boolean agregarDepartamento(Departamento departamento) {
@@ -125,5 +128,28 @@ public class GestorTurnos {
             return false; // Hubo un error
         }
     }
+
+    // Métodos para turnos
+    public boolean agregarTurno(Turno turno) {
+        return turnoDAO.agregarTurno(turno);
+    }
+
+    public boolean eliminarTurno(int id) {
+        return turnoDAO.eliminarTurno(id);
+    }
+
+    public boolean modificarTurno(Turno turno) {
+        return turnoDAO.modificarTurno(turno);
+    }
+
+    public List<Turno> obtenerTodosTurnos() {
+        return turnoDAO.obtenerTodosTurnos();
+    }
+
+    public Turno getTurnoPorId(int id) {
+        return turnoDAO.getTurnoPorId(id);
+    }
+
+
 
 }

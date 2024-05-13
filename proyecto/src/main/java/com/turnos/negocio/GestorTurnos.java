@@ -130,8 +130,9 @@ public class GestorTurnos {
     }
 
     // Métodos para turnos
-    public boolean agregarTurno(Turno turno) {
-        return turnoDAO.agregarTurno(turno);
+
+    public int agregarTurno(Turno turno1, Turno turno2) {
+        return turnoDAO.agregarTurno(turno1, turno2);
     }
 
     public boolean eliminarTurno(int id) {
@@ -150,6 +151,9 @@ public class GestorTurnos {
         return turnoDAO.getTurnoPorId(id);
     }
 
+    public Turno getTurnoPorIdGrupo(int turnoIdGrupo) {
+        return turnoDAO.getTurnoPorIdGrupo(turnoIdGrupo);
+    }
 
 
 }

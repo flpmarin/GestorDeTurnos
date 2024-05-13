@@ -34,15 +34,16 @@ VALUES
 --  datos de prueba para los turnos
 INSERT INTO
     turnos (
+        turnoIdGrupo,
         nombre,
         horaInicio,
         horaFin
     )
 VALUES
-    ('Mañana', '06:00:00', '14:00:00'),
-    ('Tarde', '14:01:00', '22:00:00'),
-    ('Noche1', '22:01:00', '23:59:59'),
-    ('Noche2', '00:00:00', '06:00:00');
+    (1,'Mañana', '06:00:00', '14:00:00'),
+    (2,'Tarde', '14:01:00', '22:00:00'),
+    (3,'Noche1', '22:01:00', '23:59:59'),
+    (3,'Noche2', '00:00:00', '06:00:00');
 
 --  datos de prueba para los puestos
 INSERT INTO

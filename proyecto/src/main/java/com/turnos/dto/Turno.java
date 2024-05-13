@@ -4,6 +4,7 @@ import java.sql.Time;
 
 public class Turno {
     private int id;
+    private int turnoIdGrupo;
     private String nombre;
     private Time horaInicio;
     private Time horaFin;
@@ -11,8 +12,9 @@ public class Turno {
     public Turno() {
     }
 
-    public Turno(int id, String nombre, Time horaInicio, Time horaFin) {
+    public Turno(int id, int turnoIdGrupo, String nombre, Time horaInicio, Time horaFin) {
         this.id = id;
+        this.turnoIdGrupo = turnoIdGrupo;
         this.nombre = nombre;
         this.horaInicio = horaInicio;
         this.horaFin = horaFin;
@@ -24,6 +26,14 @@ public class Turno {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public int getTurnoIdGrupo() {
+        return turnoIdGrupo;
+    }
+
+    public void setTurnoIdGrupo(int turnoIdGrupo) {
+        this.turnoIdGrupo = turnoIdGrupo;
     }
 
     public String getNombre() {
@@ -52,7 +62,7 @@ public class Turno {
 
     @Override
     public String toString() {
-        return "turno: "+nombre+", Inicio: " + horaInicio +" Fin: " + horaFin ;
+        return "ID Grupo: "+ turnoIdGrupo +" turno: "+nombre+", Inicio: " + horaInicio +" Fin: " + horaFin ;
     }
 
     

@@ -17,6 +17,7 @@ CREATE TABLE IF NOT EXISTS trabajadores (
 
 CREATE TABLE IF NOT EXISTS turnos (
     id INT AUTO_INCREMENT PRIMARY KEY,
+    turnoIdGrupo INT,
     nombre VARCHAR(100) NOT NULL UNIQUE,
     horaInicio TIME NOT NULL,
     horaFin TIME NOT NULL

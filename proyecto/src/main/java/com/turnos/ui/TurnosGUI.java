@@ -143,7 +143,10 @@ public class TurnosGUI extends JFrame {
     private void initModificarDepartamentoPanel() {
         JPanel panelModificar = new JPanel(new GridLayout(0, 2));
         comboDepartamentoModificar = new JComboBox<>();
-        cargarDepartamentos();
+        List<Departamento> departamentos = cargarDepartamentos();
+        for (Departamento departamento : departamentos) {
+            comboDepartamentoModificar.addItem(departamento);
+        }
         txtModificarNombreDepartamento = new JTextField();
         JButton btnModificarDepartamento = new JButton("Modificar Departamento");
         btnModificarDepartamento.addActionListener(e -> modificarDepartamento());

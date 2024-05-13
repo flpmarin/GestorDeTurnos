@@ -17,11 +17,9 @@ CREATE TABLE IF NOT EXISTS trabajadores (
 
 CREATE TABLE IF NOT EXISTS turnos (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    departamento_id INT NOT NULL,
     nombre VARCHAR(100) NOT NULL UNIQUE,
-    horarioInicio TIME NOT NULL,
-    horarioFin TIME NOT NULL,
-    FOREIGN KEY (departamento_id) REFERENCES departamentos(id) ON UPDATE CASCADE ON DELETE CASCADE
+    horaInicio TIME NOT NULL,
+    horaFin TIME NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS posiciones (

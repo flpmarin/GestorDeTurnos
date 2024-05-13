@@ -52,7 +52,7 @@ public class Turno {
 
     @Override
     public String toString() {
-        return "turno [horaFin=" + horaFin + ", horaInicio=" + horaInicio + ", id=" + id + ", nombre=" + nombre + "]";
+        return "turno: "+nombre+", Inicio: " + horaInicio +" Fin: " + horaFin ;
     }
 
     

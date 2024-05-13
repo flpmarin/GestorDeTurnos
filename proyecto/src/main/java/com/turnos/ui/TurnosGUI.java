@@ -27,6 +27,7 @@ public class TurnosGUI extends JFrame {
     private JTextField txtDepartamentoNombre, txtModificarNombreDepartamento, txtTrabajadorNombre,
             txtModificarNombreTrabajador, txtPosicionNombre, txtModificarNombrePosicion, txtTurnoNombre, txtHoraInicio,
             txtHoraFin, txtModificarHoraInicio, txtModificarHoraFin, txtModificarNombreTurno;
+    private JCheckBox checkBoxTurnoCruzaDia;
     private CardLayout cardLayout = new CardLayout();
     private JPanel cards = new JPanel(cardLayout);
     private static final String MSG_EXITO = "%s exitosamente.";
@@ -659,11 +660,20 @@ public class TurnosGUI extends JFrame {
     private void initAgregarTurnoPanel() {
         JPanel panelAgregar = new JPanel(new GridLayout(0, 2));
         txtTurnoNombre = new JTextField();
+        checkBoxTurnoCruzaDia = new JCheckBox("Cruza día");
+        txtHoraInicio = new JTextField();
+        txtHoraFin = new JTextField();
+        
         JButton btnAgregarTurno = new JButton("Agregar Turno");
         btnAgregarTurno.addActionListener(e -> agregarTurno());
         panelAgregar.add(new JLabel("Nombre:"));
         panelAgregar.add(txtTurnoNombre);
-        panelAgregar.add(new JLabel("Departamento:")); // Etiqueta para el JComboBox
+        panelAgregar.add(new JLabel("check si el turno cruza día"));
+        panelAgregar.add(checkBoxTurnoCruzaDia);
+        panelAgregar.add(new JLabel("Hora Inicio (HH:MM:SS)"));
+        panelAgregar.add(txtHoraInicio);
+        panelAgregar.add(new JLabel("Hora Fin (HH:MM:SS)"));
+        panelAgregar.add(txtHoraFin);
         panelAgregar.add(new JLabel()); // Componente invisible para ocupar la celda
         panelAgregar.add(btnAgregarTurno);
         cards.add(panelAgregar, "AgregarTurno");
@@ -673,6 +683,10 @@ public class TurnosGUI extends JFrame {
     private void initEliminarTurnoPanel() {
         JPanel panelEliminar = new JPanel(new GridLayout(0, 2));
         comboTurnoEliminar = new JComboBox<>();
+        List<Turno> turnos = cargarTurnos();
+        for (Turno turno : turnos) {
+            comboTurnoEliminar.addItem(turno);
+        }
         JButton btnEliminarTurno = new JButton("Eliminar Turno");
         btnEliminarTurno.addActionListener(e -> eliminarTurno());
         panelEliminar.add(new JLabel("Turno:"));
@@ -686,6 +700,10 @@ public class TurnosGUI extends JFrame {
     private void initModificarTurnoPanel() {
         JPanel panelModificar = new JPanel(new GridLayout(0, 2));
         comboTurnoModificar = new JComboBox<>();
+        List<Turno> turnos = cargarTurnos();
+        for (Turno turno : turnos) {
+            comboTurnoModificar.addItem(turno);
+        }
         txtModificarNombreTurno = new JTextField();
         JButton btnModificarTurno = new JButton("Modificar Turno");
         btnModificarTurno.addActionListener(e -> modificarTurno());
@@ -708,51 +726,49 @@ public class TurnosGUI extends JFrame {
         }
     }
 
-
-    // Método para cargar los turnos en los combos
-    public void cargarTodosTurnos() {
-        try {
-            List<Turno> turnos = gestorTurnos.obtenerTodosTurnos();
-            comboTurnoEliminar.removeAllItems();
-            comboTurnoModificar.removeAllItems(); // Limpia los items de comboTurnoModificar
-            for (Turno turno : turnos) {
-                comboTurnoEliminar.addItem(turno);
-                comboTurnoModificar.addItem(turno);
-            }
-            // revalidar y repintar los combo
-            comboTurnoEliminar.revalidate();
-            comboTurnoEliminar.repaint();
-            comboTurnoModificar.revalidate();
-            comboTurnoModificar.repaint();
-        } catch (Exception e) {
-            e.printStackTrace(); // Imprime la pila de llamadas de la excepción
-            JOptionPane.showMessageDialog(this, "Error al cargar los turnos: " + e.getMessage());
-        }
-    }
-
+    // Métodos para agregar un turno y mostrar un mensaje de éxito o error al usuario al finalizar la operación. 
     private void agregarTurno() {
         String nombre = txtTurnoNombre.getText();
-        Time horaInicio = Time.valueOf(txtHoraInicio.getText());
-        Time horaFin = Time.valueOf(txtHoraFin.getText());
+        String strHoraInicio = txtHoraInicio.getText();
+        String strHoraFin = txtHoraFin.getText();
+    
+        // Verificar que las horas estén en el formato correcto
+        if (!strHoraInicio.matches("\\d{2}:\\d{2}:\\d{2}") || !strHoraFin.matches("\\d{2}:\\d{2}:\\d{2}")) {
+            JOptionPane.showMessageDialog(this, "Las horas deben estar en el formato HH:MM:SS");
+            return;
+        }
+    
+        Time horaInicio = Time.valueOf(strHoraInicio);
+        Time horaFin = Time.valueOf(strHoraFin);
+    
+        // Verificar que la hora de inicio no sea después de la hora de fin
+        if (horaInicio.after(horaFin) && !checkBoxTurnoCruzaDia.isSelected()) {
+            JOptionPane.showMessageDialog(this, "La hora de inicio no puede ser después de la hora de fin");
+            return;
+        }
+    
         if (!nombre.isEmpty()) {
-            Turno turno = new Turno(0, nombre, horaInicio, horaFin);
-            boolean resultado = gestorTurnos.agregarTurno(turno);
-            manejarRespuestaOperacion(resultado, "agregar el turno", () -> {
-                if (resultado) {
-                    List<Turno> turnos = cargarTurnos();
-                    comboTurnoEliminar.removeAllItems();
-                    comboTurnoModificar.removeAllItems();
-                    for (Turno tur : turnos) {
-                        comboTurnoEliminar.addItem(tur);
-                        comboTurnoModificar.addItem(tur);
-                    }
-                }
-            });
+            if (checkBoxTurnoCruzaDia.isSelected()) {
+                // Crear dos turnos
+                Turno turno1 = new Turno(0, nombre + " Parte 1", horaInicio, Time.valueOf("23:59:59"));
+                Turno turno2 = new Turno(0, nombre + " Parte 2", Time.valueOf("00:00:00"), horaFin);
+                boolean resultado1 = gestorTurnos.agregarTurno(turno1);
+                boolean resultado2 = gestorTurnos.agregarTurno(turno2);
+                manejarRespuestaOperacion(resultado1 && resultado2, "agregar los turnos", this::cargarTurnos);
+            } else {
+                // Crear un solo turno
+                Turno turno = new Turno(0, nombre, horaInicio, horaFin);
+                boolean resultado = gestorTurnos.agregarTurno(turno);
+                manejarRespuestaOperacion(resultado, "agregar el turno", this::cargarTurnos);
+            }
+    
             txtTurnoNombre.setText("");
             txtHoraInicio.setText("");
             txtHoraFin.setText("");
         }
     }
+    
+   
 
     private void eliminarTurno() {
         Turno turno = (Turno) comboTurnoEliminar.getSelectedItem();

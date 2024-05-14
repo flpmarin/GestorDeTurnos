@@ -7,6 +7,7 @@ import com.turnos.dto.Posicion;
 import com.turnos.dto.Turno;
 import com.turnos.negocio.GestorTurnos;
 import javax.swing.*;
+import com.toedter.calendar.JDateChooser;
 
 import java.awt.*;
 import java.sql.Date;
@@ -29,9 +30,10 @@ public class TurnosGUI extends JFrame {
     private JComboBox<Ausencia> comboAusenciaEliminar;
     private JTextField txtDepartamentoNombre, txtModificarNombreDepartamento, txtTrabajadorNombre,
             txtModificarNombreTrabajador, txtPosicionNombre, txtModificarNombrePosicion, txtTurnoNombre, txtHoraInicio,
-            txtHoraFin, txtModificarHoraInicio, txtModificarHoraFin, txtModificarNombreTurno, txtAusenciaMotivo,
-            txtFechaInicio, txtFechaFin;
+            txtHoraFin, txtModificarHoraInicio, txtModificarHoraFin, txtModificarNombreTurno, txtAusenciaMotivo;
     private JCheckBox checkBoxTurnoCruzaDia;
+    private JDateChooser dateChooserInicio;
+    private JDateChooser dateChooserFin;
     private CardLayout cardLayout = new CardLayout();
     private JPanel cards = new JPanel(cardLayout);
     private static final String MSG_EXITO = "%s exitosamente.";
@@ -50,7 +52,9 @@ public class TurnosGUI extends JFrame {
         cargarTurnos();
         cargarCombosDepartamentos();
         ((CardLayout) cards.getLayout()).show(cards, "Inicio");
+    
     }
+    
 
     private void initUI() {
         initInicioPanel();
@@ -160,6 +164,7 @@ public class TurnosGUI extends JFrame {
         menu.add(submenuTurnos);
         setJMenuBar(menuBar);
     }
+
     // seccion departamentos
 
     // panel para agregar un departamento
@@ -352,6 +357,10 @@ public class TurnosGUI extends JFrame {
     // panel para modificar un trabajador
     private void initModificarTrabajadorPanel() {
         JPanel panelModificar = new JPanel(new GridLayout(0, 2));
+        // componentes que genera un calendario para seleccionar fechas. declarados en
+        // la clase TurnosGUI.
+        dateChooserInicio = new JDateChooser();
+        dateChooserFin = new JDateChooser();
 
         comboPosicionesHabilitadas = new JComboBox<>();
         comboPosicionesNoHabilitadas = new JComboBox<>();
@@ -380,7 +389,7 @@ public class TurnosGUI extends JFrame {
         });
 
         txtModificarNombreTrabajador = new JTextField();
-        JButton btnModificarTrabajador = new JButton("Modificar Nombre");
+        JButton btnModificarTrabajador = new JButton("Actualizar Nombre");
         btnModificarTrabajador.addActionListener(e -> modificarTrabajador());
         panelModificar.add(new JLabel("Departamento:"));
         panelModificar.add(comboDepartamentosModTrabajador);
@@ -388,12 +397,24 @@ public class TurnosGUI extends JFrame {
         panelModificar.add(comboTrabajadorModificar);
         panelModificar.add(new JLabel("Nuevo Nombre:"));
         panelModificar.add(txtModificarNombreTrabajador);
-        panelModificar.add(new JLabel()); // Componente invisible para ocupar la celda
+        panelModificar.add(new JLabel()); // Componente invisibl
         panelModificar.add(btnModificarTrabajador);
+        panelModificar.add(new JSeparator());// Separador
+        panelModificar.add(new JSeparator());// Separador
+        panelModificar.add(new JLabel()); // Componente invisible
+        panelModificar.add(new JLabel()); // Componente invisible
+
+
+
+
+        panelModificar.add(new JLabel("Posiciones disponibles"));
+        panelModificar.add(new JLabel("Posiciones habilitadas"));
         panelModificar.add(comboPosicionesNoHabilitadas);
         panelModificar.add(comboPosicionesHabilitadas);
         panelModificar.add(btnAsociarPosicion);
         panelModificar.add(btnRetirarPosicion);
+        panelModificar.add(new JLabel()); // Componente invisible
+        panelModificar.add(new JLabel()); // Componente invisible
 
         btnAsociarPosicion.addActionListener(e -> {
             Posicion posicionSeleccionada = (Posicion) comboPosicionesNoHabilitadas.getSelectedItem();
@@ -429,20 +450,22 @@ public class TurnosGUI extends JFrame {
         // sección para agregar ausencias en el mismo panel de modificacion de
         // trabajador
         txtAusenciaMotivo = new JTextField();
-        txtFechaInicio = new JTextField();
-        txtFechaFin = new JTextField();
         JButton btnAgregarAusencia = new JButton("Agregar Ausencia");
         btnAgregarAusencia.addActionListener(e -> agregarAusencia());
         panelModificar.add(new JLabel("Motivo de Ausencia:"));
         panelModificar.add(txtAusenciaMotivo);
         panelModificar.add(new JLabel("Fecha Inicio de Ausencia (YYYY-MM-DD):"));
-        panelModificar.add(txtFechaInicio);
+        panelModificar.add(dateChooserInicio);
         panelModificar.add(new JLabel("Fecha Fin de Ausencia (YYYY-MM-DD):"));
-        panelModificar.add(txtFechaFin);
+        panelModificar.add(dateChooserFin);
         panelModificar.add(new JLabel()); // Componente invisible para ocupar la celda
         panelModificar.add(btnAgregarAusencia);
-        
+        panelModificar.add(new JSeparator());// Separador
+        panelModificar.add(new JSeparator());// Separador
+
         // sección para eliminar ausencias
+        panelModificar.add(new JLabel()); // Componente invisible
+        panelModificar.add(new JLabel()); // Componente invisible
         comboAusenciaEliminar = new JComboBox<>();
         cargarComboAusenciaEliminar();
         JButton btnEliminarAusencia = new JButton("Eliminar Ausencia");
@@ -879,12 +902,11 @@ public class TurnosGUI extends JFrame {
 
     private void agregarAusencia() {
         String motivo = txtAusenciaMotivo.getText();
-        String fechaInicio = txtFechaInicio.getText();
-        String fechaFin = txtFechaFin.getText();
+        Date fechaInicio = new Date(dateChooserInicio.getDate().getTime());
+        Date fechaFin = new Date(dateChooserFin.getDate().getTime());
         Trabajador trabajadorSeleccionado = (Trabajador) comboTrabajadorModificar.getSelectedItem();
-        if (trabajadorSeleccionado != null && !motivo.isEmpty() && !fechaInicio.isEmpty() && !fechaFin.isEmpty()) {
-            Ausencia ausencia = new Ausencia(motivo, Date.valueOf(fechaInicio), Date.valueOf(fechaFin),
-                    trabajadorSeleccionado.getId());
+        if (trabajadorSeleccionado != null && !motivo.isEmpty() && fechaInicio != null && fechaFin != null) {
+            Ausencia ausencia = new Ausencia(motivo, fechaInicio, fechaFin, trabajadorSeleccionado.getId());
             boolean resultado = gestorTurnos.agregarAusencia(ausencia);
             manejarRespuestaOperacion(resultado, "agregar la ausencia", () -> {
                 if (resultado) {
@@ -893,8 +915,8 @@ public class TurnosGUI extends JFrame {
                 }
             });
             txtAusenciaMotivo.setText("");
-            txtFechaInicio.setText("");
-            txtFechaFin.setText("");
+            dateChooserInicio.setDate(null);
+            dateChooserFin.setDate(null);
         }
     }
 

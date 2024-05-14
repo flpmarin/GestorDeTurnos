@@ -61,7 +61,8 @@ public class Posicion {
         return nombre;
     }
 
-    @Override
+    @Override // Sobreescribir el método equals para comparar objetos de tipo Posicion, en
+              // función de su id y no de la referencia de memoria. 
     public boolean equals(Object obj) {
         if (this == obj)
             return true;

@@ -1,8 +1,10 @@
 package com.turnos.negocio;
 
+import java.sql.Date;
 import java.util.List;
 
 import com.turnos.dao.DepartamentoDAO;
+import com.turnos.dto.Ausencia;
 import com.turnos.dto.Departamento;
 import com.turnos.dao.PosicionDAO;
 import com.turnos.dto.Posicion;
@@ -10,6 +12,7 @@ import com.turnos.dao.TrabajadorDAO;
 import com.turnos.dto.Trabajador;
 import com.turnos.dao.TurnoDAO;
 import com.turnos.dto.Turno;
+import com.turnos.dao.AusenciaDAO;
 
 //esta clase es la que se comunica con la base de datos
 public class GestorTurnos {
@@ -17,6 +20,7 @@ public class GestorTurnos {
     private TrabajadorDAO trabajadorDAO = new TrabajadorDAO();
     private PosicionDAO posicionDAO = new PosicionDAO();
     private TurnoDAO turnoDAO = new TurnoDAO();
+    private AusenciaDAO ausenciaDAO = new AusenciaDAO();
 
     // Métodos para departamentos
     public boolean agregarDepartamento(Departamento departamento) {
@@ -154,6 +158,32 @@ public class GestorTurnos {
     public Turno getTurnoPorIdGrupo(int turnoIdGrupo) {
         return turnoDAO.getTurnoPorIdGrupo(turnoIdGrupo);
     }
+
+    // Métodos para ausencias
+
+    public boolean agregarAusencia(Ausencia ausencia) {
+        return ausenciaDAO.agregarAusencia(ausencia);
+    }
+
+    public boolean eliminarAusencia(Date inicio, Date fin, int trabajador_id) {
+        return ausenciaDAO.eliminarAusencia(inicio, fin, trabajador_id);
+    }
+
+    public boolean modificarAusencia(Ausencia ausencia) {
+        return ausenciaDAO.modificarAusencia(ausencia);
+    }
+
+    public List<Ausencia> obtenerTodasAusencias() {
+        return ausenciaDAO.obtenerTodasAusencias();
+    }
+
+    public List<Ausencia> obtenerAusenciasPorTrabajador(int idTrabajador) {
+        return ausenciaDAO.obtenerAusenciasPorTrabajador(idTrabajador);
+    }
+
+   
+
+    
 
 
 }

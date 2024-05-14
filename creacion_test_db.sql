@@ -31,6 +31,7 @@ CREATE TABLE IF NOT EXISTS posiciones (
 );
 
 CREATE TABLE IF NOT EXISTS ausencias (
+    motivo VARCHAR(100) NOT NULL,
     inicio DATE NOT NULL,
     fin DATE NOT NULL,
     trabajador_id INT NOT NULL,

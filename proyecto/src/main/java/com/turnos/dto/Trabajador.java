@@ -9,6 +9,7 @@ public class Trabajador {
     private String nombre;
     private int departamentoId;
     List<Posicion> posiciones;
+    List<Ausencia> ausencias;
 
     public Trabajador() {
     }
@@ -18,6 +19,7 @@ public class Trabajador {
         this.nombre = nombre;
         this.departamentoId = departamentoId;
         this.posiciones = new java.util.ArrayList<>();
+        this.ausencias = new java.util.ArrayList<>();
     }
 
     public int getId() {
@@ -46,6 +48,14 @@ public class Trabajador {
 
     public List<Posicion> getPosiciones() {
         return posiciones;
+    }
+
+    public List<Ausencia> getAusencias() {
+        return ausencias;
+    }
+
+    public void setAusencias(List<Ausencia> ausencias) {
+        this.ausencias = ausencias;
     }
 
     // agregar una posición a la lista de posiciones del trabajador, en el GUI se hará la validación de no agregar duplicados a la lista. 

@@ -8,6 +8,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.turnos.dto.Ausencia;
 import com.turnos.dto.Posicion;
 import com.turnos.dto.Trabajador;
 
@@ -113,5 +114,28 @@ public class TrabajadorDAO {
             e.printStackTrace();
         }
         return posiciones;
+    }
+
+    // Método para obtener las ausencias de un trabajador en una lista, se obtienen las ausencias de la base de datos.
+    public List<Ausencia> obtenerAusenciasPorTrabajador(int idTrabajador) {
+        String sql = "SELECT * FROM ausencias WHERE trabajador_id = ?";
+        List<Ausencia> ausencias = new ArrayList<>();
+        try (Connection conn = Conexion.getConnection();
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, idTrabajador);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    Ausencia ausencia = new Ausencia();
+                    ausencia.setTrabajador_id(rs.getInt("trabajador_id"));
+                    ausencia.setInicio(rs.getDate("inicio"));
+                    ausencia.setFin(rs.getDate("fin"));
+                    ausencia.setMotivo(rs.getString("motivo"));
+                    ausencias.add(ausencia);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return ausencias;
     }
 }

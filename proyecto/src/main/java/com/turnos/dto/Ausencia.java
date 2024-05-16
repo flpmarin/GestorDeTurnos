@@ -6,16 +6,16 @@ public class Ausencia {
     private String motivo;
     private Date inicio;
     private Date fin;
-    private int trabajador_id;
+    private int trabajadorId;
     
     public Ausencia() {
     }
 
-    public Ausencia(String motivo, Date inicio, Date fin, int trabajador_id) {
+    public Ausencia(String motivo, Date inicio, Date fin, int trabajadorId) {
         this.motivo = motivo;
         this.inicio = inicio;
         this.fin = fin;
-        this.trabajador_id = trabajador_id;
+        this.trabajadorId = trabajadorId;
     }
 
     public String getMotivo() {
@@ -43,16 +43,16 @@ public class Ausencia {
     }
 
     public int getTrabajador_id() {
-        return trabajador_id;
+        return trabajadorId;
     }
 
-    public void setTrabajador_id(int trabajador_id) {
-        this.trabajador_id = trabajador_id;
+    public void setTrabajador_id(int trabajadorId) {
+        this.trabajadorId = trabajadorId;
     }
 
     @Override
     public String toString() {
-        return "Ausencia{" + "motivo=" + motivo + ", inicio=" + inicio + ", fin=" + fin + ", trabajador_id=" + trabajador_id + '}';
+        return "Ausencia{" + "motivo=" + motivo + ", inicio=" + inicio + ", fin=" + fin + ", trabajadorId=" + trabajadorId + '}';
     }
     
 

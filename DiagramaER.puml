@@ -1,0 +1,52 @@
+@startuml turnos
+!theme plain
+class Departamento {
+    - String id
+    - String nombre
+    - Map<Trabajador> trabajadores
+    - Set<Posicion> posiciones
+}
+class Trabajador {
+    - String id
+    - String nombre
+    - int departamento_id
+    - List<Posicion> posicionesHabilitadas
+    - List<Ausencia> ausencias
+}
+class Turno {
+    - String nombre
+    - String horarioInicio
+    - String horarioFin
+    + Turno(String nombre, String horarioInicio, String horarioFin)
+}
+class Posicion {
+    - String id
+    - String nombre
+    - int departamento_id
+    - List<Trabajador> trabajadores
+}
+class Ausencia {
+    - String motivo
+    - LocalDate inicio
+    - LocalDate fin
+    - int trabajador_id
+}
+class Asignacion {
+    - LocalDate fecha
+    - Trabajador trabajador
+    - Turno turno
+    - Posicion posicion
+    + Asignacion(LocalDate fecha, Trabajador trabajador, Turno turno, Posicion posicion)
+}
+
+class Inactividad {
+}
+
+Departamento "1" -- "*" Trabajador : contiene >
+Departamento "1" -- "*" Posicion : gestiona >
+Trabajador "n" --|> "1" Departamento : pertenece a >
+Trabajador -- "*" Ausencia : tiene >
+Trabajador -- "*" Asignacion : "está en" >
+Turno -- "*" Asignacion : "incluye" >
+Posicion -- "*" Asignacion : "cubre" >
+@enduml

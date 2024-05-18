@@ -1,52 +1,109 @@
 @startuml turnos
-!theme plain
-class Departamento {
-    - String id
-    - String nombre
-    - Map<Trabajador> trabajadores
-    - Set<Posicion> posiciones
-}
-class Trabajador {
-    - String id
-    - String nombre
-    - int departamento_id
-    - List<Posicion> posicionesHabilitadas
-    - List<Ausencia> ausencias
-}
-class Turno {
-    - String nombre
-    - String horarioInicio
-    - String horarioFin
-    + Turno(String nombre, String horarioInicio, String horarioFin)
-}
-class Posicion {
-    - String id
-    - String nombre
-    - int departamento_id
-    - List<Trabajador> trabajadores
-}
-class Ausencia {
-    - String motivo
-    - LocalDate inicio
-    - LocalDate fin
-    - int trabajador_id
-}
-class Asignacion {
-    - LocalDate fecha
-    - Trabajador trabajador
-    - Turno turno
-    - Posicion posicion
-    + Asignacion(LocalDate fecha, Trabajador trabajador, Turno turno, Posicion posicion)
+' En un diagrama UML, las relaciones entre las clases a menudo se representan con líneas de asociación, por lo que no es necesario duplicar esta información en las listas dentro de las clases.
+package "DTO - entidades" #LightGreen {
+
+    class DepartamentoDTO {
+        - int PK_id
+        - String nombre
+    }
+    class TrabajadorDTO {
+        - int PK_id
+        - String nombre
+        - int FK_departamentoId
+    }
+    class TurnoDTO {
+        - int PK_id
+        - String nombre
+        - Time Inicio
+        - Time Fin
+    }
+    class PosicionDTO {
+        - int PK_id
+        - String nombre
+        - int FK_departamentoId
+    }
+
+    class AusenciaDTO {
+        - String motivo
+        - Date PK_inicio
+        - Date PK_fin
+        - int PK/FK_trabajadorId
+    }
+
+    class AsignacionDTO {
+        - LocalDate fecha
+        - int FK_trabajadorId
+        - int FK_turnoId
+        - int FK_posicionId
+    }
+    class InactividadDTO {
+        - int PK_id
+        - String descripcion
+        - int FK_trabajadorId
+    }
+
+
 }
 
-class Inactividad {
+package "Negocio" #Yellow {
+    class GestorTurnos {
+        - DepartamentoDAO departamentoDAO
+        - TrabajadorDAO trabajadorDAO
+        - PosicionDAO posicionDAO
+        - TurnoDAO turnoDAO
+        - AusenciaDAO ausenciaDAO
+        - InactividadDAO inactividadDAO
+        + agregar()
+        + eliminar()
+        + modificar()
+        + obtenerTodos()
+        + obtenerPorId()
+    }
 }
 
-Departamento "1" -- "*" Trabajador : contiene >
-Departamento "1" -- "*" Posicion : gestiona >
-Trabajador "n" --|> "1" Departamento : pertenece a >
-Trabajador -- "*" Ausencia : tiene >
-Trabajador -- "*" Asignacion : "está en" >
-Turno -- "*" Asignacion : "incluye" >
-Posicion -- "*" Asignacion : "cubre" >
+package "DAO - persistencia" #Pink {
+    class DepartamentoDAO {}
+    class TrabajadorDAO {}
+    class PosicionDAO {}
+    class TurnoDAO {}
+    class AusenciaDAO {}
+    class InactividadDAO {}
+}
+
+package "UI" #Orange {
+    class TurnosGUI {
+        - GestorTurnos gestorTurnos
+    }
+}
+
+DepartamentoDTO "1" -- "*" TrabajadorDTO : contiene >
+DepartamentoDTO "1" -- "*" PosicionDTO : gestiona >
+TrabajadorDTO "n" -- "1" DepartamentoDTO : pertenece a >
+TrabajadorDTO -down-> "*" AusenciaDTO : tiene >
+TrabajadorDTO -down-> "*" InactividadDTO : tiene >
+TrabajadorDTO -down-> "*" AsignacionDTO : "está en" >
+TurnoDTO -down-> "*" AsignacionDTO : "incluye" >
+PosicionDTO -down-> "*" AsignacionDTO : "cubre" >
+
+GestorTurnos -down-> DepartamentoDAO : usa >
+GestorTurnos -down-> TrabajadorDAO : usa >
+GestorTurnos -down-> PosicionDAO : usa >
+GestorTurnos -down-> TurnoDAO : usa >
+GestorTurnos -down-> AusenciaDAO : usa >
+GestorTurnos -down-> InactividadDAO : usa >
+
+DepartamentoDAO -down-> DepartamentoDTO : maneja >
+TrabajadorDAO -down-> TrabajadorDTO : maneja >
+PosicionDAO -down-> PosicionDTO : maneja >
+TurnoDAO -down-> TurnoDTO : maneja >
+AusenciaDAO -down-> AusenciaDTO : maneja >
+InactividadDAO -down-> InactividadDTO : maneja >
+
+TurnosGUI -down-> GestorTurnos : usa >
+
+note right of GestorTurnos
+    GestorTurnos usa todos los DAOs
+    para manejar los DTOs correspondientes.
+end note
+
 @enduml

@@ -10,6 +10,8 @@ public class Trabajador {
     private int departamentoId;
     List<Posicion> posiciones;
     List<Ausencia> ausencias;
+    // private List<Asignacion> asignaciones;
+
 
     public Trabajador() {
     }

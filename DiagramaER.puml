@@ -5,42 +5,42 @@ package "DTO - entidades" #AED6F1 {
 
 
 skinparam shadowing true
-    class DepartamentoDTO {
+    class Departamento {
         - int PK_id
         - String nombre
     }
 
-    class TrabajadorDTO {
+    class Trabajador {
         - int PK_id
         - String nombre
         - int FK_departamentoId
     }
-    class TurnoDTO {
+    class Turno {
         - int PK_id
         - String nombre
         - Time Inicio
         - Time Fin
     }
-    class PosicionDTO {
+    class Posicion {
         - int PK_id
         - String nombre
         - int FK_departamentoId
     }
 
-    class AusenciaDTO {
+    class Ausencia {
         - String motivo
         - Date PK_inicio
         - Date PK_fin
         - int PK/FK_trabajadorId
     }
 
-    class AsignacionDTO << (C, Orchid) >>{
+    class Asignacion << (C, Orchid) >>{
         - LocalDate fecha
         - int FK_trabajadorId
         - int FK_turnoId
         - int FK_posicionId
     }
-    class InactividadDTO {
+    class Inactividad {
         - int PK_id
         - String descripcion
         - int FK_trabajadorId
@@ -80,14 +80,14 @@ package "UI" #3498DB {
     }
 }
 
-DepartamentoDTO "1" -- "*" TrabajadorDTO : contiene >
-DepartamentoDTO "1" -- "*" PosicionDTO : gestiona >
-TrabajadorDTO "n" -- "1" DepartamentoDTO : pertenece a >
-TrabajadorDTO -down-> "*" AusenciaDTO : tiene >
-TrabajadorDTO -down-> "*" InactividadDTO : tiene >
-TrabajadorDTO -down-> "*" AsignacionDTO : "está en" >
-TurnoDTO -down-> "*" AsignacionDTO : "incluye" >
-PosicionDTO -down-> "*" AsignacionDTO : "cubre" >
+Departamento "1" -- "*" Trabajador : contiene >
+Departamento "1" -- "*" Posicion : gestiona >
+Trabajador "n" -- "1" Departamento : pertenece a >
+Trabajador -down-> "*" Ausencia : tiene >
+Trabajador -down-> "*" Inactividad : tiene >
+Trabajador -down-> "*" Asignacion : "está en" >
+Turno -down-> "*" Asignacion : "incluye" >
+Posicion -down-> "*" Asignacion : "cubre" >
 
 GestorTurnos -down-> DepartamentoDAO : usa >
 GestorTurnos -down-> TrabajadorDAO : usa >
@@ -96,12 +96,12 @@ GestorTurnos -down-> TurnoDAO : usa >
 GestorTurnos -down-> AusenciaDAO : usa >
 GestorTurnos -down-> InactividadDAO : usa >
 
-DepartamentoDAO -down-> DepartamentoDTO : maneja >
-TrabajadorDAO -down-> TrabajadorDTO : maneja >
-PosicionDAO -down-> PosicionDTO : maneja >
-TurnoDAO -down-> TurnoDTO : maneja >
-AusenciaDAO -down-> AusenciaDTO : maneja >
-InactividadDAO -down-> InactividadDTO : maneja >
+DepartamentoDAO -down-> Departamento : maneja >
+TrabajadorDAO -down-> Trabajador : maneja >
+PosicionDAO -down-> Posicion : maneja >
+TurnoDAO -down-> Turno : maneja >
+AusenciaDAO -down-> Ausencia : maneja >
+InactividadDAO -down-> Inactividad : maneja >
 
 TurnosGUI -down-> GestorTurnos : usa >
 

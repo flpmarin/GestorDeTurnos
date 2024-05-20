@@ -40,11 +40,11 @@ CREATE TABLE IF NOT EXISTS ausencias (
 );
 
 CREATE TABLE IF NOT EXISTS asignaciones (
+    id INT AUTO_INCREMENT PRIMARY KEY,
     fecha DATE NOT NULL,
     trabajador_id INT NOT NULL,
     turno_id INT NOT NULL,
     posicion_id INT NOT NULL,
-    PRIMARY KEY (fecha, trabajador_id),
     FOREIGN KEY (trabajador_id) REFERENCES trabajadores(id) ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY (turno_id) REFERENCES turnos(id) ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY (posicion_id) REFERENCES posiciones(id) ON UPDATE CASCADE ON DELETE CASCADE

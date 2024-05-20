@@ -10,16 +10,19 @@ import java.nio.file.Paths;
 import java.sql.Date;
 import java.util.List;
 
-import com.turnos.dao.DepartamentoDAO;
-import com.turnos.dto.Ausencia;
 import com.turnos.dto.Departamento;
-import com.turnos.dao.PosicionDAO;
-import com.turnos.dto.Posicion;
-import com.turnos.dao.TrabajadorDAO;
-import com.turnos.dto.Trabajador;
-import com.turnos.dao.TurnoDAO;
-import com.turnos.dto.Turno;
+import com.turnos.dao.DepartamentoDAO;
+import com.turnos.dto.Asignacion;
+import com.turnos.dao.AsignacionDAO;
+import com.turnos.dto.Ausencia;
 import com.turnos.dao.AusenciaDAO;
+import com.turnos.dto.Posicion;
+import com.turnos.dao.PosicionDAO;
+import com.turnos.dto.Trabajador;
+import com.turnos.dao.TrabajadorDAO;
+import com.turnos.dto.Turno;
+import com.turnos.dao.TurnoDAO;
+
 
 //esta clase es la que se comunica con la base de datos
 public class GestorTurnos {
@@ -28,6 +31,7 @@ public class GestorTurnos {
     private PosicionDAO posicionDAO = new PosicionDAO();
     private TurnoDAO turnoDAO = new TurnoDAO();
     private AusenciaDAO ausenciaDAO = new AusenciaDAO();
+    private AsignacionDAO asignacionDAO = new AsignacionDAO();
 
     // Métodos para departamentos
     public boolean agregarDepartamento(Departamento departamento) {
@@ -211,9 +215,40 @@ public class GestorTurnos {
         return ausenciaDAO.obtenerAusenciasPorTrabajador(idTrabajador);
     }
 
-   
+   // Métodos para asignaciones
+    public boolean agregarAsignacion(Asignacion asignacion) {
+        return asignacionDAO.agregarAsignacion(asignacion);
+    }
 
-    
+    public boolean eliminarAsignacion(int id) {
+        return asignacionDAO.eliminarAsignacion(id);
+    }
+
+    public boolean modificarAsignacion(Asignacion asignacion) {
+        return asignacionDAO.modificarAsignacion(asignacion);
+    }
+
+    public boolean eliminarAsignacionesPorTrabajador(int trabajador_id) {
+        return asignacionDAO.eliminarAsignacionesPorTrabajador(trabajador_id);
+    }
+
+    public List<Asignacion> obtenerTodasAsignaciones() {
+        return asignacionDAO.obtenerTodasAsignaciones();
+    }
+
+    public List<Asignacion> obtenerAsignacionesPorTrabajador(int idTrabajador) {
+        return asignacionDAO.obtenerAsignacionesPorTrabajador(idTrabajador);
+    }
+
+    public List<Asignacion> obtenerAsignacionesPorTurno(int idTurno) {
+        return asignacionDAO.obtenerAsignacionesPorTurno(idTurno);
+    }
+
+    public List<Asignacion> obtenerAsignacionesPorRangoFecha(Date inicio, Date fin) {
+        return asignacionDAO.obtenerAsignacionesPorRangoFecha(inicio, fin);
+    }
+
+
 
 
 }

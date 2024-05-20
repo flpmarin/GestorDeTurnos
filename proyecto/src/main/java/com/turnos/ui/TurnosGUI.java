@@ -54,7 +54,6 @@ public class TurnosGUI extends JFrame {
         ((CardLayout) cards.getLayout()).show(cards, "Inicio");
     
     }
-    
 
     private void initUI() {
         initInicioPanel();

@@ -2,9 +2,7 @@ package com.turnos;
 
 import com.turnos.negocio.GestorTurnos;
 import com.turnos.ui.TurnosGUI;
-
 import java.net.URL;
-
 import javax.swing.SwingUtilities;
 
 public class TurnosMain {

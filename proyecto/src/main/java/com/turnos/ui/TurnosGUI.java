@@ -45,6 +45,7 @@ public class TurnosGUI extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
         initUI();
+        initMenu();
         cargarDepartamentos();
         cargarTodasPosiciones();
         cargarTodosTrabajadores();
@@ -52,7 +53,7 @@ public class TurnosGUI extends JFrame {
         cargarTurnos();
         cargarCombosDepartamentos();
         ((CardLayout) cards.getLayout()).show(cards, "Inicio");
-    
+
     }
 
     private void initUI() {
@@ -82,9 +83,20 @@ public class TurnosGUI extends JFrame {
         comboDepartamentoBienvenida = new JComboBox<>();
         JButton btnEntrar = new JButton("Entrar");
         btnEntrar.addActionListener(e -> {
-            // Aquí puedes hacer algo con el departamento seleccionado
-            initMenu();
-            ((CardLayout) cards.getLayout()).show(cards, "AgregarDepartamento");
+            // Obtén el departamento seleccionado
+            Departamento departamentoSeleccionado = (Departamento) comboDepartamentoBienvenida.getSelectedItem();
+        
+            // Crea una instancia de AsignacionGUI
+            AsignacionGUI asignacionGUI = new AsignacionGUI(departamentoSeleccionado, getJMenuBar(), this);
+        
+            // Muestra el panel "Vista" en AsignacionGUI
+            asignacionGUI.showCard("Vista");
+        
+            // Muestra AsignacionGUI
+            asignacionGUI.setVisible(true);
+        
+            // Cierra TurnosGUI
+            dispose();
         });
         panelBienvenida.add(new JLabel("Selecciona un departamento:"));
         panelBienvenida.add(comboDepartamentoBienvenida);
@@ -95,6 +107,13 @@ public class TurnosGUI extends JFrame {
     private void initMenu() {
         JMenuBar menuBar = new JMenuBar();
         JMenu menu = new JMenu("Opciones");
+        JMenuItem miVolverInicio = new JMenuItem("Volver");
+        miVolverInicio.addActionListener(e -> cardLayout.show(cards, "Bienvenida"));
+        menuBar.add(miVolverInicio);
+
+
+
+       
 
         // Submenu para departamentos
         JMenu submenuDepartamentos = new JMenu("Departamentos");
@@ -105,6 +124,7 @@ public class TurnosGUI extends JFrame {
         miAgregarDepartamento.addActionListener(e -> cardLayout.show(cards, "AgregarDepartamento"));
         miEliminarDepartamento.addActionListener(e -> cardLayout.show(cards, "EliminarDepartamento"));
         miModificarDepartamento.addActionListener(e -> cardLayout.show(cards, "ModificarDepartamento"));
+
 
         submenuDepartamentos.add(miAgregarDepartamento);
         submenuDepartamentos.add(miEliminarDepartamento);
@@ -402,9 +422,6 @@ public class TurnosGUI extends JFrame {
         panelModificar.add(new JSeparator());// Separador
         panelModificar.add(new JLabel()); // Componente invisible
         panelModificar.add(new JLabel()); // Componente invisible
-
-
-
 
         panelModificar.add(new JLabel("Posiciones disponibles"));
         panelModificar.add(new JLabel("Posiciones habilitadas"));

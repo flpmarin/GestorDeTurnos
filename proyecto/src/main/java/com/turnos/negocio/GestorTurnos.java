@@ -23,7 +23,6 @@ import com.turnos.dao.TrabajadorDAO;
 import com.turnos.dto.Turno;
 import com.turnos.dao.TurnoDAO;
 
-
 //esta clase es la que se comunica con la base de datos
 public class GestorTurnos {
     private DepartamentoDAO departamentoDAO = new DepartamentoDAO();
@@ -55,28 +54,27 @@ public class GestorTurnos {
     }
 
     public void cargarDepartamentosDesdeJson(URL url) {
-    Gson gson = new Gson();
-    try {
-        // Leer el archivo JSON y convertirlo en una lista de Departamento
-        String contenido = new String(Files.readAllBytes(Paths.get(url.toURI())));
-        List<Departamento> departamentos = gson.fromJson(contenido, new TypeToken<List<Departamento>>(){}.getType());
+        Gson gson = new Gson();
+        try {
+            // Leer el archivo JSON y convertirlo en una lista de Departamento
+            String contenido = new String(Files.readAllBytes(Paths.get(url.toURI())));
+            List<Departamento> departamentos = gson.fromJson(contenido, new TypeToken<List<Departamento>>() {
+            }.getType());
 
-        // Guardar cada Departamento en la base de datos
-        for (Departamento departamento : departamentos) {
-            departamentoDAO.agregarDepartamento(departamento);
-        }
+            // Guardar cada Departamento en la base de datos
+            for (Departamento departamento : departamentos) {
+                departamentoDAO.agregarDepartamento(departamento);
+            }
 
-        // Después de cargar los datos, recuperar todos los departamentos y imprimirlos
-        List<Departamento> departamentosEnDB = departamentoDAO.obtenerTodosDepartamentos();
-        for (Departamento departamento : departamentosEnDB) {
-            System.out.println(departamento);
+            // Después de cargar los datos, recuperar todos los departamentos y imprimirlos
+            List<Departamento> departamentosEnDB = departamentoDAO.obtenerTodosDepartamentos();
+            for (Departamento departamento : departamentosEnDB) {
+                System.out.println(departamento);
+            }
+        } catch (IOException | URISyntaxException e) {
+            e.printStackTrace();
         }
-    } catch (IOException | URISyntaxException e) {
-        e.printStackTrace();
     }
-}
-
-
 
     // Métodos para trabajadores
     public boolean agregarTrabajador(Trabajador trabajador) {
@@ -132,11 +130,11 @@ public class GestorTurnos {
             if (!trabajador.getPosiciones().contains(posicion)) {
                 trabajador.getPosiciones().add(posicion);
                 posicion.getTrabajadores().add(trabajador);
-    
+
                 // Actualizamos la base de datos
                 PosicionDAO posicionDAO = new PosicionDAO();
                 boolean exito = posicionDAO.asociarTrabajadorAPosicion(trabajador, posicion);
-    
+
                 return exito; // Devolvemos el resultado de la operación en la base de datos
             }
             return false; // La posición ya estaba asignada al trabajador
@@ -153,11 +151,11 @@ public class GestorTurnos {
             if (trabajador.getPosiciones().contains(posicion)) {
                 trabajador.getPosiciones().remove(posicion);
                 posicion.getTrabajadores().remove(trabajador);
-    
+
                 // Actualizamos la base de datos
                 PosicionDAO posicionDAO = new PosicionDAO();
                 boolean exito = posicionDAO.retirarTrabajadorDePosicion(trabajador, posicion);
-    
+
                 return exito; // Devolvemos el resultado de la operación en la base de datos
             }
             return false; // La posición no estaba asignada al trabajador
@@ -215,7 +213,7 @@ public class GestorTurnos {
         return ausenciaDAO.obtenerAusenciasPorTrabajador(idTrabajador);
     }
 
-   // Métodos para asignaciones
+    // Métodos para asignaciones
     public boolean agregarAsignacion(Asignacion asignacion) {
         return asignacionDAO.agregarAsignacion(asignacion);
     }
@@ -247,8 +245,5 @@ public class GestorTurnos {
     public List<Asignacion> obtenerAsignacionesPorRangoFecha(Date inicio, Date fin) {
         return asignacionDAO.obtenerAsignacionesPorRangoFecha(inicio, fin);
     }
-
-
-
 
 }

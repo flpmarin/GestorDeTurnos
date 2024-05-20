@@ -1,11 +1,15 @@
 @startuml turnos
 ' En un diagrama UML, las relaciones entre las clases a menudo se representan con líneas de asociación, por lo que no es necesario duplicar esta información en las listas dentro de las clases.
-package "DTO - entidades" #LightGreen {
+package "DTO - entidades" #AED6F1 {
 
+
+
+skinparam shadowing true
     class DepartamentoDTO {
         - int PK_id
         - String nombre
     }
+
     class TrabajadorDTO {
         - int PK_id
         - String nombre
@@ -30,7 +34,7 @@ package "DTO - entidades" #LightGreen {
         - int PK/FK_trabajadorId
     }
 
-    class AsignacionDTO {
+    class AsignacionDTO << (C, Orchid) >>{
         - LocalDate fecha
         - int FK_trabajadorId
         - int FK_turnoId
@@ -45,7 +49,7 @@ package "DTO - entidades" #LightGreen {
 
 }
 
-package "Negocio" #Yellow {
+package "Negocio" #85C1E9 {
     class GestorTurnos {
         - DepartamentoDAO departamentoDAO
         - TrabajadorDAO trabajadorDAO
@@ -61,7 +65,7 @@ package "Negocio" #Yellow {
     }
 }
 
-package "DAO - persistencia" #Pink {
+package "DAO - persistencia" #3498DB {
     class DepartamentoDAO {}
     class TrabajadorDAO {}
     class PosicionDAO {}
@@ -70,7 +74,7 @@ package "DAO - persistencia" #Pink {
     class InactividadDAO {}
 }
 
-package "UI" #Orange {
+package "UI" #3498DB {
     class TurnosGUI {
         - GestorTurnos gestorTurnos
     }

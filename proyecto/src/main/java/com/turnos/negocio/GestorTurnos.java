@@ -1,5 +1,12 @@
 package com.turnos.negocio;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.sql.Date;
 import java.util.List;
 
@@ -39,10 +46,33 @@ public class GestorTurnos {
         return departamentoDAO.obtenerTodosDepartamentos();
     }
 
-    // En GestorTurnos.java
     public Departamento getDepartamentoPorId(int id) {
         return departamentoDAO.getDepartamentoPorId(id);
     }
+
+    public void cargarDepartamentosDesdeJson(URL url) {
+    Gson gson = new Gson();
+    try {
+        // Leer el archivo JSON y convertirlo en una lista de Departamento
+        String contenido = new String(Files.readAllBytes(Paths.get(url.toURI())));
+        List<Departamento> departamentos = gson.fromJson(contenido, new TypeToken<List<Departamento>>(){}.getType());
+
+        // Guardar cada Departamento en la base de datos
+        for (Departamento departamento : departamentos) {
+            departamentoDAO.agregarDepartamento(departamento);
+        }
+
+        // Después de cargar los datos, recuperar todos los departamentos y imprimirlos
+        List<Departamento> departamentosEnDB = departamentoDAO.obtenerTodosDepartamentos();
+        for (Departamento departamento : departamentosEnDB) {
+            System.out.println(departamento);
+        }
+    } catch (IOException | URISyntaxException e) {
+        e.printStackTrace();
+    }
+}
+
+
 
     // Métodos para trabajadores
     public boolean agregarTrabajador(Trabajador trabajador) {

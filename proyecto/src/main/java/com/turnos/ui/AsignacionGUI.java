@@ -1,21 +1,14 @@
 package com.turnos.ui;
 
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
+import javax.swing.*;
+import java.awt.*;
 
-import java.awt.CardLayout;
+import com.toedter.calendar.JCalendar;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.BorderLayout;
 
 import com.toedter.calendar.JDateChooser;
 import com.turnos.dto.Departamento;
@@ -79,8 +72,12 @@ public class AsignacionGUI extends JFrame {
 
     private void initVistaPanel(Departamento departamento) {
         JPanel vistaPanel = new JPanel();
-        vistaPanel.setLayout(new BoxLayout(vistaPanel, BoxLayout.Y_AXIS)); // Alinear los botones verticalmente
-
+        vistaPanel.setLayout(new BoxLayout(vistaPanel, BoxLayout.X_AXIS)); // Alinear los componentes horizontalmente
+    
+        // Crea un panel para los botones de los trabajadores
+        JPanel trabajadoresPanel = new JPanel();
+        trabajadoresPanel.setLayout(new BoxLayout(trabajadoresPanel, BoxLayout.Y_AXIS)); // Alinear los botones verticalmente
+    
         for (Trabajador trabajador : gestorTurnos.obtenerTrabajadoresPorDepartamento(departamento.getId())) {
             JButton trabajadorButton = new JButton(trabajador.getNombre());
             trabajadorButton.addActionListener(new ActionListener() {
@@ -89,9 +86,33 @@ public class AsignacionGUI extends JFrame {
                     // Código para manejar el clic en el botón del trabajador
                 }
             });
-            vistaPanel.add(trabajadorButton);
+            trabajadoresPanel.add(trabajadorButton);
         }
-
+    
+        // Obtén la cantidad de turnos únicos (turnoIdGrupo) de la base de datos
+        int numTurnos = gestorTurnos.obtenerNumeroDeTurnosUnicos();
+    
+        // Crea un array con los nombres de los días de la semana
+        String[] daysOfWeek = { "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo" };
+    
+        // Crea un panel para cada día de la semana
+        for (int i = 0; i < 7; i++) {
+            JPanel dayPanel = new JPanel(new GridLayout(numTurnos, 1)); // Crea un panel con el número de filas igual al número de turnos
+            dayPanel.setBorder(BorderFactory.createTitledBorder(daysOfWeek[i])); // Agrega un borde con el título del día de la semana
+    
+            // Crea un JLabel para cada turno
+            for (int j = 0; j < numTurnos; j++) {
+                JLabel turnoLabel = new JLabel("Turno " + (j + 1));
+                turnoLabel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+                dayPanel.add(turnoLabel);
+            }
+    
+            vistaPanel.add(dayPanel);
+        }
+    
+        // Agrega el panel de trabajadores al panel principal
+        vistaPanel.add(trabajadoresPanel);
+    
         // Envuelve el panel en un JScrollPane
         JScrollPane scrollPane = new JScrollPane(vistaPanel);
         cards.add(scrollPane, "Vista");

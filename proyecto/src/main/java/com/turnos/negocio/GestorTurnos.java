@@ -191,6 +191,10 @@ public class GestorTurnos {
         return turnoDAO.getTurnoPorIdGrupo(turnoIdGrupo);
     }
 
+    public int obtenerNumeroDeTurnosUnicos() {
+        return turnoDAO.obtenerNumeroDeTurnosUnicos();
+    }
+
     // Métodos para ausencias
 
     public boolean agregarAusencia(Ausencia ausencia) {

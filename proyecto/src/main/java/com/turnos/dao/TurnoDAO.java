@@ -158,4 +158,18 @@ public class TurnoDAO {
         }
     }
 
+    public int obtenerNumeroDeTurnosUnicos() {
+        String sql = "SELECT COUNT(DISTINCT turnoIdGrupo) FROM turnos";
+        try (Connection conn = Conexion.getConnection();
+                PreparedStatement pstmt = conn.prepareStatement(sql);
+                ResultSet rs = pstmt.executeQuery()) {
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
 }

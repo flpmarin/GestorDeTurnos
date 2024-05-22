@@ -17,9 +17,10 @@ skinparam shadowing true
     }
     class Turno {
         - int PK_id
+        - int turnoIdGrupo
         - String nombre
-        - Time Inicio
-        - Time Fin
+        - Time horaInicio
+        - Time horaFin
     }
     class Posicion {
         - int PK_id
@@ -35,15 +36,20 @@ skinparam shadowing true
     }
 
     class Asignacion << (C, Orchid) >>{
-        - LocalDate fecha
+        - int PK_id
+        - Date fechaInicio
+        - Date fechaFin
+        - Time horaInicio
+        - Time horaFin
         - int FK_trabajadorId
         - int FK_turnoId
         - int FK_posicionId
     }
-    class Inactividad {
+    class Preferencia {
         - int PK_id
         - String descripcion
         - int FK_trabajadorId
+        - int FK_turnoId
     }
 
 
@@ -56,7 +62,7 @@ package "Negocio" #85C1E9 {
         - PosicionDAO posicionDAO
         - TurnoDAO turnoDAO
         - AusenciaDAO ausenciaDAO
-        - InactividadDAO inactividadDAO
+        - PreferenciaDAO preferenciaDAO
         + agregar()
         + eliminar()
         + modificar()
@@ -71,7 +77,7 @@ package "DAO - persistencia" #3498DB {
     class PosicionDAO {}
     class TurnoDAO {}
     class AusenciaDAO {}
-    class InactividadDAO {}
+    class PreferenciaDAO {}
 }
 
 package "UI" #3498DB {
@@ -84,9 +90,10 @@ Departamento "1" -- "*" Trabajador : contiene >
 Departamento "1" -- "*" Posicion : gestiona >
 Trabajador "n" -- "1" Departamento : pertenece a >
 Trabajador -down-> "*" Ausencia : tiene >
-Trabajador -down-> "*" Inactividad : tiene >
+Trabajador -down-> "*" Preferencia : tiene >
 Trabajador -down-> "*" Asignacion : "está en" >
 Turno -down-> "*" Asignacion : "incluye" >
+Turno -down-> "*" Preferencia : "es preferido por" >
 Posicion -down-> "*" Asignacion : "cubre" >
 
 GestorTurnos -down-> DepartamentoDAO : usa >
@@ -94,14 +101,14 @@ GestorTurnos -down-> TrabajadorDAO : usa >
 GestorTurnos -down-> PosicionDAO : usa >
 GestorTurnos -down-> TurnoDAO : usa >
 GestorTurnos -down-> AusenciaDAO : usa >
-GestorTurnos -down-> InactividadDAO : usa >
+GestorTurnos -down-> PreferenciaDAO : usa >
 
 DepartamentoDAO -down-> Departamento : maneja >
 TrabajadorDAO -down-> Trabajador : maneja >
 PosicionDAO -down-> Posicion : maneja >
 TurnoDAO -down-> Turno : maneja >
 AusenciaDAO -down-> Ausencia : maneja >
-InactividadDAO -down-> Inactividad : maneja >
+PreferenciaDAO -down-> Preferencia : maneja >
 
 TurnosGUI -down-> GestorTurnos : usa >
 

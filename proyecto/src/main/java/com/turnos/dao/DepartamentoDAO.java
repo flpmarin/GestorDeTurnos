@@ -81,4 +81,21 @@ public Departamento getDepartamentoPorId(int id) {
         }
     }
 
+    public Departamento obtenerDepartamentoPorTrabajador(int trabajadorId) {
+        String sql = "SELECT d.id, d.nombre FROM departamentos d JOIN trabajadores t ON d.id = t.departamento_id WHERE t.id = ?";
+        Departamento departamento = null;
+        try (Connection conn = Conexion.getConnection();
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, trabajadorId);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    departamento = new Departamento(rs.getInt("id"), rs.getString("nombre"));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return departamento;
+    }
+
 }

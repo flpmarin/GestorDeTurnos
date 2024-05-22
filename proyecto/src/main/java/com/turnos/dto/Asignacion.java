@@ -1,23 +1,30 @@
 package com.turnos.dto;
 
 import java.sql.Date;
+import java.sql.Time;
 
 public class Asignacion {
     private int id;
-    private Date fecha;
-    private int idTrabajador;
-    private int idTurno;
-    private int idPosicion;
+    private Date fechaInicio;
+    private Date fechaFin;
+    private Time horaInicio;
+    private Time horaFin;
+    private int trabajadorId;
+    private int turnoId;
+    private int posicionId;
     
     public Asignacion() {
     }
 
-    public Asignacion(int id, Date fecha, int idTrabajador, int idTurno, int idPosicion) {
+    public Asignacion(int id, Date fechaInicio, Date fechaFin, Time horaInicio, Time horaFin, int trabajadorId, int turnoId, int posicionId) {
         this.id = id;
-        this.fecha = fecha;
-        this.idTrabajador = idTrabajador;
-        this.idTurno = idTurno;
-        this.idPosicion = idPosicion;
+        this.fechaInicio = fechaInicio;
+        this.fechaFin = fechaFin;
+        this.horaInicio = horaInicio;
+        this.horaFin = horaFin;
+        this.trabajadorId = trabajadorId;
+        this.turnoId = turnoId;
+        this.posicionId = posicionId;
     }
 
     public int getId() {
@@ -28,43 +35,63 @@ public class Asignacion {
         this.id = id;
     }
 
-    public Date getFecha() {
-        return fecha;
+    public Date getFechaInicio() {
+        return fechaInicio;
     }
 
-    public void setFecha(Date fecha) {
-        this.fecha = fecha;
+    public void setFechaInicio(Date fechaInicio) {
+        this.fechaInicio = fechaInicio;
     }
 
-    public int getIdTrabajador() {
-        return idTrabajador;
+    public Date getFechaFin() {
+        return fechaFin;
     }
 
-    public void setIdTrabajador(int idTrabajador) {
-        this.idTrabajador = idTrabajador;
+    public void setFechaFin(Date fechaFin) {
+        this.fechaFin = fechaFin;
     }
 
-    public int getIdTurno() {
-        return idTurno;
+    public Time getHoraInicio() {
+        return horaInicio;
     }
 
-    public void setIdTurno(int idTurno) {
-        this.idTurno = idTurno;
+    public void setHoraInicio(Time horaInicio) {
+        this.horaInicio = horaInicio;
     }
 
-    public int getIdPosicion() {
-        return idPosicion;
+    public Time getHoraFin() {
+        return horaFin;
     }
 
-    public void setIdPosicion(int idPosicion) {
-        this.idPosicion = idPosicion;
+    public void setHoraFin(Time horaFin) {
+        this.horaFin = horaFin;
     }
 
+    public int getTrabajadorId() {
+        return trabajadorId;
+    }
+
+    public void setTrabajadorId(int trabajadorId) {
+        this.trabajadorId = trabajadorId;
+    }
+
+    public int getTurnoId() {
+        return turnoId;
+    }
+
+    public void setTurnoId(int turnoId) {
+        this.turnoId = turnoId;
+    }
+
+    public int getPosicionId() {
+        return posicionId;
+    }
+
+    public void setPosicionId(int posicionId) {
+        this.posicionId = posicionId;
+    }
     @Override
     public String toString() {
-        return "Asignacion{" + "id=" + id + ", fecha=" + fecha + ", idTrabajador=" + idTrabajador + ", idTurno=" + idTurno + ", idPosicion=" + idPosicion + '}';
+        return "Asignacion{" + "id=" + id + ", fechaInicio=" + fechaInicio + ", fechaFin=" + fechaFin + ", horaInicio=" + horaInicio + ", horaFin=" + horaFin + ", idTrabajador=" + trabajadorId + ", idTurno=" + turnoId + ", idPosicion=" + posicionId + '}';
     }
-
-    
-    
 }

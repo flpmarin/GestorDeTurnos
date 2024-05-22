@@ -11,13 +11,16 @@ import com.turnos.dto.Asignacion;
 
 public class AsignacionDAO {
     public boolean agregarAsignacion(Asignacion asignacion) {
-        String sql = "INSERT INTO asignaciones (fecha, trabajador_id, turno_id, posicion_id) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO asignaciones (fecha_inicio, fecha_fin, hora_inicio, hora_fin, trabajador_id, turno_id, posicion_id) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = Conexion.getConnection();
                 PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setDate(1, asignacion.getFecha());
-            pstmt.setInt(2, asignacion.getIdTrabajador());
-            pstmt.setInt(3, asignacion.getIdTurno());
-            pstmt.setInt(4, asignacion.getIdPosicion());
+            pstmt.setDate(1, asignacion.getFechaInicio());
+            pstmt.setDate(2, asignacion.getFechaFin());
+            pstmt.setTime(3, asignacion.getHoraInicio());
+            pstmt.setTime(4, asignacion.getHoraFin());
+            pstmt.setInt(2, asignacion.getTrabajadorId());
+            pstmt.setInt(3, asignacion.getTurnoId());
+            pstmt.setInt(4, asignacion.getPosicionId());
             return pstmt.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -38,14 +41,17 @@ public class AsignacionDAO {
     }
 
     public boolean modificarAsignacion(Asignacion asignacion) {
-        String sql = "UPDATE asignaciones SET fecha = ?, trabajador_id = ?, turno_id = ?, posicion_id = ? WHERE id = ?";
+        String sql = "UPDATE asignaciones SET fecha_inicio = ?, fecha_fin = ?, hora_inicio = ?, hora_fin = ?, trabajador_id = ?, turno_id = ?, posicion_id = ? WHERE id = ?";
         try (Connection conn = Conexion.getConnection();
                 PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setDate(1, asignacion.getFecha());
-            pstmt.setInt(2, asignacion.getIdTrabajador());
-            pstmt.setInt(3, asignacion.getIdTurno());
-            pstmt.setInt(4, asignacion.getIdPosicion());
-            pstmt.setInt(5, asignacion.getId());
+            pstmt.setDate(1, asignacion.getFechaInicio());
+            pstmt.setDate(2, asignacion.getFechaFin());
+            pstmt.setTime(3, asignacion.getHoraInicio());
+            pstmt.setTime(4, asignacion.getHoraFin());
+            pstmt.setInt(5, asignacion.getTrabajadorId());
+            pstmt.setInt(6, asignacion.getTurnoId());
+            pstmt.setInt(7, asignacion.getPosicionId());
+            pstmt.setInt(8, asignacion.getId());
             return pstmt.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -86,10 +92,13 @@ public class AsignacionDAO {
             while (rs.next()) {
                 Asignacion asignacion = new Asignacion();
                 asignacion.setId(rs.getInt("id"));
-                asignacion.setFecha(rs.getDate("fecha"));
-                asignacion.setIdTrabajador(rs.getInt("trabajador_id"));
-                asignacion.setIdTurno(rs.getInt("turno_id"));
-                asignacion.setIdPosicion(rs.getInt("posicion_id"));
+                asignacion.setFechaInicio(rs.getDate("fecha_inicio"));
+                asignacion.setFechaFin(rs.getDate("fecha_fin"));
+                asignacion.setHoraInicio(rs.getTime("hora_inicio"));
+                asignacion.setHoraFin(rs.getTime("hora_fin"));
+                asignacion.setTrabajadorId(rs.getInt("trabajador_id"));
+                asignacion.setTurnoId(rs.getInt("turno_id"));
+                asignacion.setPosicionId(rs.getInt("posicion_id"));
                 asignaciones.add(asignacion);
             }
         } catch (SQLException e) {
@@ -108,10 +117,13 @@ public class AsignacionDAO {
                 while (rs.next()) {
                     Asignacion asignacion = new Asignacion();
                     asignacion.setId(rs.getInt("id"));
-                    asignacion.setFecha(rs.getDate("fecha"));
-                    asignacion.setIdTrabajador(rs.getInt("trabajador_id"));
-                    asignacion.setIdTurno(rs.getInt("turno_id"));
-                    asignacion.setIdPosicion(rs.getInt("posicion_id"));
+                    asignacion.setFechaInicio(rs.getDate("fecha_inicio"));
+                    asignacion.setFechaFin(rs.getDate("fecha_fin"));
+                    asignacion.setHoraInicio(rs.getTime("hora_inicio"));
+                    asignacion.setHoraFin(rs.getTime("hora_fin"));
+                    asignacion.setTrabajadorId(rs.getInt("trabajador_id"));
+                    asignacion.setTurnoId(rs.getInt("turno_id"));
+                    asignacion.setPosicionId(rs.getInt("posicion_id"));
                     asignaciones.add(asignacion);
                 }
             }
@@ -131,10 +143,13 @@ public class AsignacionDAO {
                 while (rs.next()) {
                     Asignacion asignacion = new Asignacion();
                     asignacion.setId(rs.getInt("id"));
-                    asignacion.setFecha(rs.getDate("fecha"));
-                    asignacion.setIdTrabajador(rs.getInt("trabajador_id"));
-                    asignacion.setIdTurno(rs.getInt("turno_id"));
-                    asignacion.setIdPosicion(rs.getInt("posicion_id"));
+                    asignacion.setFechaInicio(rs.getDate("fecha_inicio"));
+                    asignacion.setFechaFin(rs.getDate("fecha_fin"));
+                    asignacion.setHoraInicio(rs.getTime("hora_inicio"));
+                    asignacion.setHoraFin(rs.getTime("hora_fin"));
+                    asignacion.setTrabajadorId(rs.getInt("trabajador_id"));
+                    asignacion.setTurnoId(rs.getInt("turno_id"));
+                    asignacion.setPosicionId(rs.getInt("posicion_id"));
                     asignaciones.add(asignacion);
                 }
             }
@@ -153,10 +168,13 @@ public class AsignacionDAO {
                 if (rs.next()) {
                     Asignacion asignacion = new Asignacion();
                     asignacion.setId(rs.getInt("id"));
-                    asignacion.setFecha(rs.getDate("fecha"));
-                    asignacion.setIdTrabajador(rs.getInt("trabajador_id"));
-                    asignacion.setIdTurno(rs.getInt("turno_id"));
-                    asignacion.setIdPosicion(rs.getInt("posicion_id"));
+                    asignacion.setFechaInicio(rs.getDate("fecha_inicio"));
+                    asignacion.setFechaFin(rs.getDate("fecha_fin"));
+                    asignacion.setHoraInicio(rs.getTime("hora_inicio"));
+                    asignacion.setHoraFin(rs.getTime("hora_fin"));
+                    asignacion.setTrabajadorId(rs.getInt("trabajador_id"));
+                    asignacion.setTurnoId(rs.getInt("turno_id"));
+                    asignacion.setPosicionId(rs.getInt("posicion_id"));
                     return asignacion;
                 }
             }
@@ -177,10 +195,40 @@ public class AsignacionDAO {
                 while (rs.next()) {
                     Asignacion asignacion = new Asignacion();
                     asignacion.setId(rs.getInt("id"));
-                    asignacion.setFecha(rs.getDate("fecha"));
-                    asignacion.setIdTrabajador(rs.getInt("trabajador_id"));
-                    asignacion.setIdTurno(rs.getInt("turno_id"));
-                    asignacion.setIdPosicion(rs.getInt("posicion_id"));
+                    asignacion.setFechaInicio(rs.getDate("fecha_inicio"));
+                    asignacion.setFechaFin(rs.getDate("fecha_fin"));
+                    asignacion.setHoraInicio(rs.getTime("hora_inicio"));
+                    asignacion.setHoraFin(rs.getTime("hora_fin"));
+                    asignacion.setTrabajadorId(rs.getInt("trabajador_id"));
+                    asignacion.setTurnoId(rs.getInt("turno_id"));
+                    asignacion.setPosicionId(rs.getInt("posicion_id"));
+                        
+                    asignaciones.add(asignacion);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return asignaciones;
+    }
+
+    public List<Asignacion> obtenerAsignacionesPorFecha(java.sql.Date fecha) {
+        String sql = "SELECT * FROM asignaciones WHERE fecha = ?";
+        List<Asignacion> asignaciones = new ArrayList<>();
+        try (Connection conn = Conexion.getConnection();
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setDate(1, fecha);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    Asignacion asignacion = new Asignacion();
+                    asignacion.setId(rs.getInt("id"));
+                    asignacion.setFechaInicio(rs.getDate("fecha_inicio"));
+                    asignacion.setFechaFin(rs.getDate("fecha_fin"));
+                    asignacion.setHoraInicio(rs.getTime("hora_inicio"));
+                    asignacion.setHoraFin(rs.getTime("hora_fin"));
+                    asignacion.setTrabajadorId(rs.getInt("trabajador_id"));
+                    asignacion.setTurnoId(rs.getInt("turno_id"));
+                    asignacion.setPosicionId(rs.getInt("posicion_id"));
                     asignaciones.add(asignacion);
                 }
             }

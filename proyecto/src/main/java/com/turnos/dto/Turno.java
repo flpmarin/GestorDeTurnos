@@ -60,6 +60,15 @@ public class Turno {
         this.horaFin = horaFin;
     }
 
+    // Método que calcula la duración del turno en horas y la devuelve como entero
+    public int getDuracion() {
+        long milisegundosInicio = horaInicio.getTime();
+        long milisegundosFin = horaFin.getTime();
+
+        long duracionEnMilisegundos = milisegundosFin - milisegundosInicio;
+        return (int) (duracionEnMilisegundos / (60 * 60 * 1000)); // Convertimos la duración a horas
+    }
+
     @Override
     public String toString() {
         return "ID Grupo: "+ turnoIdGrupo +" turno: "+nombre+", Inicio: " + horaInicio +" Fin: " + horaFin ;

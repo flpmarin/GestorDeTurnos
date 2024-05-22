@@ -144,6 +144,10 @@ public class GestorTurnos {
         }
     }
 
+    public int NumeroDeTrabajadoresPorDepartamento(int idDepartamento) {
+        return trabajadorDAO.NumeroDeTrabajadoresPorDepartamento(idDepartamento);
+    }
+
     // Método para retirar una posición habilitada de un trabajador
     public boolean retirarPosicionHabilitada(Trabajador trabajador, Posicion posicion) {
         try {

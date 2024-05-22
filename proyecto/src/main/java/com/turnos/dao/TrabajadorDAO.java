@@ -138,4 +138,20 @@ public class TrabajadorDAO {
         }
         return ausencias;
     }
+
+    public int NumeroDeTrabajadoresPorDepartamento(int idDepartamento) {
+        String sql = "SELECT COUNT(*) FROM trabajadores WHERE departamento_id = ?";
+        try (Connection conn = Conexion.getConnection();
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, idDepartamento);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
 }

@@ -111,39 +111,41 @@ public class AsignacionGUI extends JFrame {
     }
 
     private void initVistaPanel(Departamento departamento, JPanel panel) {
-    panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS)); // Añade esta línea
-    JDateChooser startDateChooser = new JDateChooser();
-    JDateChooser endDateChooser = new JDateChooser();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS)); // Añade esta línea
+        JDateChooser startDateChooser = new JDateChooser();
+        JDateChooser endDateChooser = new JDateChooser();
 
-    // Crea un modelo de tabla vacío con los nombres de las columnas
-    DefaultTableModel tableModel = new DefaultTableModel();
-    // Crea un JTable con el modelo de tabla
-    JTable table = new JTable(tableModel);
+        // Crea un modelo de tabla vacío con los nombres de las columnas
+        DefaultTableModel tableModel = new DefaultTableModel();
+        // Crea un JTable con el modelo de tabla
+        JTable table = new JTable(tableModel);
+        int totalRows = gestorTurnos.calcularCantidadPosiciones() * gestorTurnos.obtenerNumeroDeTurnosUnicos();
 
-    JButton bGenerarColumna = new JButton("Generar columnas");
-    bGenerarColumna.addActionListener(e -> {
-        java.util.Date startDateUtil = startDateChooser.getDate();
-        java.util.Date endDateUtil = endDateChooser.getDate();
+        JButton bGenerarColumna = new JButton("Generar columnas");
+        bGenerarColumna.addActionListener(e -> {
+            java.util.Date startDateUtil = startDateChooser.getDate();
+            java.util.Date endDateUtil = endDateChooser.getDate();
 
-        if (startDateUtil != null && endDateUtil != null) {
-            LocalDate startDate = startDateUtil.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-            LocalDate endDate = endDateUtil.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+            if (startDateUtil != null && endDateUtil != null) {
+                LocalDate startDate = startDateUtil.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+                LocalDate endDate = endDateUtil.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 
-            // Limpia el modelo de la tabla
-            tableModel.setRowCount(0);
-            tableModel.setColumnCount(0);
+                // Limpia el modelo de la tabla
+                tableModel.setRowCount(0);
+                tableModel.setColumnCount(0);
 
-            generarColumnasFecha(startDate, endDate, tableModel);
+                generarColumnasFecha(startDate, endDate, tableModel, totalRows);
 
- 
+                // tableModel.addRow(new Object[] { "Trabajador 1", "01/01/2022", "Turno 1" });
+                // tableModel.addRow(new Object[] { "Trabajador 2", "02/01/2022", "Turno 2" });
+                // tableModel.addRow(new Object[] { "Trabajador 3", "03/01/2022", "Turno 3" });
 
-            // genera un mensaje de error si no se selecciona una fecha
-            table.setModel(tableModel);
-        } else {
-            JOptionPane.showMessageDialog(null, "No se seleccionó ninguna fecha");
-        }
-    });
-
+                // genera un mensaje de error si no se selecciona una fecha
+                table.setModel(tableModel);
+            } else {
+                JOptionPane.showMessageDialog(null, "No se seleccionó ninguna fecha");
+            }
+        });
 
         // Añade la tabla a un JScrollPane
         JScrollPane scrollPane = new JScrollPane(table);
@@ -242,8 +244,8 @@ public class AsignacionGUI extends JFrame {
 
     // Método para generar las columnas de la tabla de acuerdo a las fechas
     // seleccionadas
-    public void generarColumnasFecha(LocalDate startDate, LocalDate endDate, DefaultTableModel tableModel) {
-       
+    public void generarColumnasFecha(LocalDate startDate, LocalDate endDate, DefaultTableModel tableModel, int totalRows) {
+
         // Validar que la diferencia entre las fechas no sea mayor a 33 días
         long daysBetween = ChronoUnit.DAYS.between(startDate, endDate);
         if (daysBetween > 33) {
@@ -261,6 +263,11 @@ public class AsignacionGUI extends JFrame {
         // Agregar las fechas como columnas a la tabla
         for (LocalDate date : dates) {
             tableModel.addColumn(date.toString());
+        }
+
+        // Añade las filas
+        for (int i = 0; i < totalRows; i++) {
+            tableModel.addRow(new Object[tableModel.getColumnCount()]);
         }
     }
 

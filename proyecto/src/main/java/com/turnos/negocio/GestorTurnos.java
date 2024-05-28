@@ -141,6 +141,10 @@ public class GestorTurnos {
         return trabajadorDAO.obtenerPosicionesPorTrabajador(idTrabajador);
     }
 
+    public int calcularCantidadPosiciones() {
+        return posicionDAO.calcularCantidadPosiciones();
+    }
+
     // Método para asociar una posición habilitada a un trabajador
     public boolean asociarPosicionATrabajador(Trabajador trabajador, Posicion posicion) {
         try {

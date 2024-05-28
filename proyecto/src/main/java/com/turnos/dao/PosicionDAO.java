@@ -117,4 +117,19 @@ public class PosicionDAO {
             return false;
         }
     }
+
+    public int calcularCantidadPosiciones () {
+        String sql = "SELECT COUNT(*) FROM posiciones";
+        try (Connection conn = Conexion.getConnection();
+                PreparedStatement pstmt = conn.prepareStatement(sql);
+                ResultSet rs = pstmt.executeQuery()) {
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
 }

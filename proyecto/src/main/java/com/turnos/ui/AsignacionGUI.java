@@ -1,11 +1,13 @@
 package com.turnos.ui;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -176,7 +178,36 @@ public class AsignacionGUI extends JFrame {
         panel.add(startDateChooser);
         panel.add(endDateChooser);
         panel.add(bGenerarColumna); // Añade el botón de generarColum
-        panel.add(scrollPane);
+
+        // Calcula la cantidad de posiciones
+        int totalPositions = gestorTurnos.calcularCantidadPosiciones();
+
+        // Genera un color aleatorio para cada posición
+        Color[] colors = new Color[totalPositions];
+        Random random = new Random();
+        for (int i = 0; i < totalPositions; i++) {
+            float r = random.nextFloat();
+            float g = random.nextFloat();
+            float b = random.nextFloat();
+            colors[i] = new Color(r, g, b);
+        }
+
+        // Personaliza el renderizador de la tabla
+        table.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
+                    boolean hasFocus, int row, int column) {
+                Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+
+                // Calcula la posición de la fila
+                int position = row % colors.length;
+
+                // Cambia el color de la fila en función de la posición
+                c.setBackground(colors[position]);
+
+                return c;
+            }
+        });
 
         // Añade un botón para guardar los cambios
         // JButton guardarButton = new JButton("Guardar");
@@ -197,6 +228,9 @@ public class AsignacionGUI extends JFrame {
         // }
         // }
         // });
+
+        panel.add(scrollPane);
+        panel.add(trabajadorComboBox);
     }
 
     private void initAsignacionPanel(Departamento departamento) {
@@ -244,7 +278,8 @@ public class AsignacionGUI extends JFrame {
 
     // Método para generar las columnas de la tabla de acuerdo a las fechas
     // seleccionadas
-    public void generarColumnasFecha(LocalDate startDate, LocalDate endDate, DefaultTableModel tableModel, int totalRows) {
+    public void generarColumnasFecha(LocalDate startDate, LocalDate endDate, DefaultTableModel tableModel,
+            int totalRows) {
 
         // Validar que la diferencia entre las fechas no sea mayor a 33 días
         long daysBetween = ChronoUnit.DAYS.between(startDate, endDate);

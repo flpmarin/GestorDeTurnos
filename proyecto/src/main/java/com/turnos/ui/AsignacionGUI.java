@@ -20,6 +20,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.image.BufferedImage;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
@@ -209,6 +210,39 @@ public class AsignacionGUI extends JFrame {
             }
         });
 
+        // Crea el panel de la leyenda
+        JPanel legendPanel = new JPanel();
+        legendPanel.setLayout(new BoxLayout(legendPanel, BoxLayout.Y_AXIS));
+
+        // Añade un título a la leyenda
+        legendPanel.add(new JLabel("Leyenda:"));
+
+        // Añade una entrada de la leyenda para cada posición
+        for (int i = 0; i < totalPositions; i++) {
+            // Crea el panel de la entrada de la leyenda
+            JPanel entryPanel = new JPanel();
+            entryPanel.setLayout(new BoxLayout(entryPanel, BoxLayout.X_AXIS));
+
+            // Crea el icono de color
+            BufferedImage image = new BufferedImage(16, 16, BufferedImage.TYPE_INT_RGB);
+            Graphics2D graphics = image.createGraphics();
+            graphics.setColor(colors[i]);
+            graphics.fillOval(0, 0, 16, 16);
+            ImageIcon icon = new ImageIcon(image);
+
+            // Obtiene el nombre de la posición
+            String positionName = gestorTurnos.obtenerNombrePosicionPorId(i);
+
+            // Crea el label con el icono de color y el nombre de la posición
+            JLabel label = new JLabel(" " + positionName, icon, JLabel.LEFT);
+
+            // Añade el label al panel de la entrada de la leyenda
+            entryPanel.add(label);
+
+            // Añade el panel de la entrada de la leyenda al panel de la leyenda
+            legendPanel.add(entryPanel);
+        }
+
         // Añade un botón para guardar los cambios
         // JButton guardarButton = new JButton("Guardar");
         // guardarButton.addActionListener(new ActionListener() {
@@ -231,6 +265,7 @@ public class AsignacionGUI extends JFrame {
 
         panel.add(scrollPane);
         panel.add(trabajadorComboBox);
+        panel.add(legendPanel);
     }
 
     private void initAsignacionPanel(Departamento departamento) {

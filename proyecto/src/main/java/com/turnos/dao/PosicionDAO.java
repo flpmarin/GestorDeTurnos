@@ -132,4 +132,20 @@ public class PosicionDAO {
         return 0;
     }
 
+    public String obtenerNombrePosicionPorId(int posicion_id){
+        String sql = "SELECT nombre FROM posiciones WHERE id = ?";
+        try (Connection conn = Conexion.getConnection();
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, posicion_id);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getString("nombre");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 }

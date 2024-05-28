@@ -174,7 +174,7 @@ public class AsignacionGUI extends JFrame {
         });
 
         // Añade el JComboBox al panel principal
-        add(trabajadorComboBox, BorderLayout.SOUTH);
+        add(trabajadorComboBox, BorderLayout.EAST);
         add(scrollPane, BorderLayout.CENTER);
         panel.add(startDateChooser);
         panel.add(endDateChooser);
@@ -221,7 +221,7 @@ public class AsignacionGUI extends JFrame {
         for (int i = 0; i < totalPositions; i++) {
             // Crea el panel de la entrada de la leyenda
             JPanel entryPanel = new JPanel();
-            entryPanel.setLayout(new BoxLayout(entryPanel, BoxLayout.X_AXIS));
+            entryPanel.setLayout(new BoxLayout(entryPanel, BoxLayout.Y_AXIS));
 
             // Crea el icono de color
             BufferedImage image = new BufferedImage(16, 16, BufferedImage.TYPE_INT_RGB);
@@ -231,7 +231,7 @@ public class AsignacionGUI extends JFrame {
             ImageIcon icon = new ImageIcon(image);
 
             // Obtiene el nombre de la posición
-            String positionName = gestorTurnos.obtenerNombrePosicionPorId(i);
+            String positionName = gestorTurnos.obtenerNombrePosicionPorId(i + 1);
 
             // Crea el label con el icono de color y el nombre de la posición
             JLabel label = new JLabel(" " + positionName, icon, JLabel.LEFT);
@@ -262,7 +262,7 @@ public class AsignacionGUI extends JFrame {
         // }
         // }
         // });
-
+        add(legendPanel, BorderLayout.SOUTH);
         panel.add(scrollPane);
         panel.add(trabajadorComboBox);
         panel.add(legendPanel);

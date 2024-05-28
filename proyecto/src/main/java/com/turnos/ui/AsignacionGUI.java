@@ -1,7 +1,10 @@
 package com.turnos.ui;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.jfree.chart.ChartFactory;
@@ -15,6 +18,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 
 import com.toedter.calendar.JDateChooser;
 import com.turnos.dto.Departamento;
@@ -84,62 +90,111 @@ public class AsignacionGUI extends JFrame {
     }
 
     private void initUI(Departamento departamento) {
-        initVistaPanel(departamento);
+        // Inicializar el panel de vista
+        JPanel vistaPanel = new JPanel(new BorderLayout());
+        vistaPanel.setPreferredSize(new Dimension(400, 300));
+        initVistaPanel(departamento, vistaPanel);
+
+        // Inicializar el panel de asignación
         initAsignacionPanel(departamento);
+
+        // Inicializar el panel de gráficos
         initGraficosPanel(departamento);
 
+        // Agregar los paneles al CardLayout
+        cards.add(vistaPanel, "Vista");
+        cards.revalidate();
+        cards.repaint();
+
+        // Agregar el panel de cards al frame principal
         add(cards, BorderLayout.CENTER);
     }
 
-    private void initVistaPanel(Departamento departamento) {
-        JPanel vistaPanel = new JPanel();
-        vistaPanel.setLayout(new BoxLayout(vistaPanel, BoxLayout.X_AXIS)); // Alinear los componentes horizontalmente
+    private void initVistaPanel(Departamento departamento, JPanel panel) {
+    panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS)); // Añade esta línea
+    JDateChooser startDateChooser = new JDateChooser();
+    JDateChooser endDateChooser = new JDateChooser();
 
-        // Crea un panel para los botones de los trabajadores
-        JPanel trabajadoresPanel = new JPanel();
-        trabajadoresPanel.setLayout(new BoxLayout(trabajadoresPanel, BoxLayout.Y_AXIS)); // Alinear los botones
-                                                                                         // verticalmente
+    // Crea un modelo de tabla vacío con los nombres de las columnas
+    DefaultTableModel tableModel = new DefaultTableModel();
+    // Crea un JTable con el modelo de tabla
+    JTable table = new JTable(tableModel);
 
+    JButton bGenerarColumna = new JButton("Generar columnas");
+    bGenerarColumna.addActionListener(e -> {
+        java.util.Date startDateUtil = startDateChooser.getDate();
+        java.util.Date endDateUtil = endDateChooser.getDate();
+
+        if (startDateUtil != null && endDateUtil != null) {
+            LocalDate startDate = startDateUtil.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+            LocalDate endDate = endDateUtil.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+
+            // Limpia el modelo de la tabla
+            tableModel.setRowCount(0);
+            tableModel.setColumnCount(0);
+
+            generarColumnasFecha(startDate, endDate, tableModel);
+
+ 
+
+            // genera un mensaje de error si no se selecciona una fecha
+            table.setModel(tableModel);
+        } else {
+            JOptionPane.showMessageDialog(null, "No se seleccionó ninguna fecha");
+        }
+    });
+
+
+        // Añade la tabla a un JScrollPane
+        JScrollPane scrollPane = new JScrollPane(table);
+
+        // Crea un JComboBox para los trabajadores
+        JComboBox<Trabajador> trabajadorComboBox = new JComboBox<>();
+
+        // Añade cada trabajador del departamento al JComboBox
         for (Trabajador trabajador : gestorTurnos.obtenerTrabajadoresPorDepartamento(departamento.getId())) {
-            JButton trabajadorButton = new JButton(trabajador.getNombre());
-            trabajadorButton.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    // Código para manejar el clic en el botón del trabajador
-                }
-            });
-            trabajadoresPanel.add(trabajadorButton);
+            trabajadorComboBox.addItem(trabajador);
         }
 
-        // Obtén la cantidad de turnos únicos (turnoIdGrupo) de la base de datos
-        int numTurnos = gestorTurnos.obtenerNumeroDeTurnosUnicos();
+        // Añade un ActionListener al JComboBox
+        trabajadorComboBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Obtiene el trabajador seleccionado
+                Trabajador selectedTrabajador = (Trabajador) trabajadorComboBox.getSelectedItem();
 
-        // Crea un array con los nombres de los días de la semana
-        String[] daysOfWeek = { "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo" };
-
-        // Crea un panel para cada día de la semana
-        for (int i = 0; i < 7; i++) {
-            JPanel dayPanel = new JPanel(new GridLayout(numTurnos, 1)); // Crea un panel con el número de filas igual al
-                                                                        // número de turnos
-            dayPanel.setBorder(BorderFactory.createTitledBorder(daysOfWeek[i])); // Agrega un borde con el título del
-                                                                                 // día de la semana
-
-            // Crea un JLabel para cada turno
-            for (int j = 0; j < numTurnos; j++) {
-                JLabel turnoLabel = new JLabel("Turno " + (j + 1));
-                turnoLabel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-                dayPanel.add(turnoLabel);
+                // Código para manejar la selección del trabajador
+                // Por ejemplo, podrías actualizar la tabla aquí
             }
+        });
 
-            vistaPanel.add(dayPanel);
-        }
+        // Añade el JComboBox al panel principal
+        add(trabajadorComboBox, BorderLayout.SOUTH);
+        add(scrollPane, BorderLayout.CENTER);
+        panel.add(startDateChooser);
+        panel.add(endDateChooser);
+        panel.add(bGenerarColumna); // Añade el botón de generarColum
+        panel.add(scrollPane);
 
-        // Agrega el panel de trabajadores al panel principal
-        vistaPanel.add(trabajadoresPanel);
-
-        // Envuelve el panel en un JScrollPane
-        JScrollPane scrollPane = new JScrollPane(vistaPanel);
-        cards.add(scrollPane, "Vista");
+        // Añade un botón para guardar los cambios
+        // JButton guardarButton = new JButton("Guardar");
+        // guardarButton.addActionListener(new ActionListener() {
+        // @Override
+        // public void actionPerformed(ActionEvent e) {
+        // // Código para guardar los cambios
+        // // Por ejemplo, podrías guardar los datos de la tabla en la base de datos
+        // // y mostrar un mensaje de éxito o error
+        // if (gestorTurnos.guardarCambios()) {
+        // JOptionPane.showMessageDialog(AsignacionGUI.this, String.format(MSG_EXITO,
+        // "guardar los cambios"),
+        // "Éxito", JOptionPane.INFORMATION_MESSAGEgenerarColumnasFecha);
+        // } else {
+        // JOptionPane.showMessageDialog(AsignacionGUI.this, String.format(MSG_ERROR,
+        // "guardar los cambios"),
+        // "Error", JOptionPane.ERROR_MESSAGE);
+        // }
+        // }
+        // });
     }
 
     private void initAsignacionPanel(Departamento departamento) {
@@ -153,7 +208,6 @@ public class AsignacionGUI extends JFrame {
         asignacionPanel.add(dateChooserFin);
         cards.add(asignacionPanel, "Asignacion");
     }
-
 
     private void initGraficosPanel(Departamento departamento) {
         JPanel asignacionPanel = new JPanel();
@@ -184,6 +238,30 @@ public class AsignacionGUI extends JFrame {
         ChartPanel chartPanel = new ChartPanel(chart);
         asignacionPanel.add(chartPanel);
         cards.add(asignacionPanel, "Graficos");
+    }
+
+    // Método para generar las columnas de la tabla de acuerdo a las fechas
+    // seleccionadas
+    public void generarColumnasFecha(LocalDate startDate, LocalDate endDate, DefaultTableModel tableModel) {
+       
+        // Validar que la diferencia entre las fechas no sea mayor a 33 días
+        long daysBetween = ChronoUnit.DAYS.between(startDate, endDate);
+        if (daysBetween > 33) {
+            JOptionPane.showMessageDialog(null, "La diferencia entre las fechas no puede superar los 33 días");
+            return;
+        }
+
+        // Generar una lista de fechas entre la fecha de inicio y la fecha de fin
+        List<LocalDate> dates = new ArrayList<>();
+        while (!startDate.isAfter(endDate)) {
+            dates.add(startDate);
+            startDate = startDate.plusDays(1);
+        }
+
+        // Agregar las fechas como columnas a la tabla
+        for (LocalDate date : dates) {
+            tableModel.addColumn(date.toString());
+        }
     }
 
 }

@@ -1,0 +1,48 @@
+@startuml
+actor GestorTurnos
+
+package "Gestión de Turnos" {
+    usecase "Agregar Turno" as UC1
+    usecase "Eliminar Turno" as UC2
+    usecase "Modificar Turno" as UC3
+    usecase "Obtener Todos los Turnos" as UC4
+    usecase "Obtener Turno por ID" as UC5
+    usecase "Agregar Ausencia" as UC6
+    usecase "Eliminar Ausencia" as UC7
+    usecase "Modificar Ausencia" as UC8
+    usecase "Obtener Todas las Ausencias" as UC9
+    usecase "Obtener Ausencia por ID" as UC10
+    usecase "Agregar Preferencia" as UC11
+    usecase "Eliminar Preferencia" as UC12
+    usecase "Modificar Preferencia" as UC13
+    usecase "Obtener Todas las Preferencias" as UC14
+    usecase "Obtener Preferencia por ID" as UC15
+    usecase "Agregar Posición" as UC16
+    usecase "Eliminar Posición" as UC17
+    usecase "Modificar Posición" as UC18
+    usecase "Obtener Todas las Posiciones" as UC19
+    usecase "Obtener Posición por ID" as UC20
+}
+
+GestorTurnos --> UC1
+GestorTurnos --> UC2
+GestorTurnos --> UC3
+GestorTurnos --> UC4
+GestorTurnos --> UC5
+GestorTurnos --> UC6
+GestorTurnos --> UC7
+GestorTurnos --> UC8
+GestorTurnos --> UC9
+GestorTurnos --> UC10
+GestorTurnos --> UC11
+GestorTurnos --> UC12
+GestorTurnos --> UC13
+GestorTurnos --> UC14
+GestorTurnos --> UC15
+GestorTurnos --> UC16
+GestorTurnos --> UC17
+GestorTurnos --> UC18
+GestorTurnos --> UC19
+GestorTurnos --> UC20
+
+@enduml

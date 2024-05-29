@@ -1,0 +1,203 @@
+@startuml turnos
+package "DTO - entidades" #AED6F1 {
+    class Departamento {
+        - int id
+        - String nombre
+    }
+
+    class Trabajador {
+        - int id
+        - String nombre
+        - int departamentoId
+    }
+
+    class Turno {
+        - int id
+        - int turnoIdGrupo
+        - String nombre
+        - Time horaInicio
+        - Time horaFin
+    }
+
+    class Posicion {
+        - int id
+        - String nombre
+        - int departamentoId
+    }
+
+    class Ausencia {
+        - String motivo
+        - Date inicio
+        - Date fin
+        - int trabajadorId
+    }
+
+    class Asignacion {
+        - int id
+        - Date fechaInicio
+        - Date fechaFin
+        - Time horaInicio
+        - Time horaFin
+        - int trabajadorId
+        - int turnoId
+        - int posicionId
+    }
+
+    class Preferencia {
+        - int id
+        - String descripcion
+        - int trabajadorId
+        - int turnoId
+    }
+}
+
+package "Negocio" #85C1E9 {
+    class GestorTurnos {
+        - DepartamentoDAO departamentoDAO
+        - TrabajadorDAO trabajadorDAO
+        - PosicionDAO posicionDAO
+        - TurnoDAO turnoDAO
+        - AusenciaDAO ausenciaDAO
+        - PreferenciaDAO preferenciaDAO
+        + agregar()
+        + eliminar()
+        + modificar()
+        + obtenerTodos()
+        + obtenerPorId()
+    }
+}
+
+package "DAO - persistencia" #3498DB {
+    class DepartamentoDAO {
+        + agregarDepartamento()
+        + obtenerTodosDepartamentos()
+        + obtenerDepartamentoPorId()
+        + modificarDepartamento()
+        + eliminarDepartamento()
+        + obtenerDepartamentoPorTrabajador()
+    }
+    class TrabajadorDAO {
+        + agregarTrabajador()
+        + obtenerTodosTrabajadores()
+        + obtenerTrabajadorPorId()
+        + modificarTrabajador()
+        + eliminarTrabajador()
+        + obtenerTrabajadorPorDepartamento()
+        + obtenerPosicionesPorTrabajador()
+        + obtenerAusenciasPorTrabajador()
+        + NumeroDeTrabajadoresPorDepartamento()
+    }
+    class PosicionDAO {
+        + agregarPosicion()
+        + obtenerTodosPosiciones()
+        + modificarPosicion()
+        + eliminarPosicion()
+        + obtenerPosicionesPorDepartamento()
+        + asociarTrabajadorAPosicion()
+        + retirarTrabajadorDePosicion()
+        + calcularCantidadPosiciones()
+        + obtenerNombrePosicionPorId()
+
+    }
+    class TurnoDAO {
+        + agregarTurno()
+        + obtenerTodosTurnos()
+        + getTurnoPorId()
+        + getTurnoPorIdGrupo()
+        + eliminarTurno()
+        + modificarTurno()
+        + obtenerNumeroDeTurnosUnicos()
+    }
+    class AusenciaDAO {
+        + agregarAusencia()
+        + eliminarAusencia()
+        + modificarAusencia()
+        + eliminarAusenciasPorTrabajador()
+        + obtenerTodasAusencias()
+        + obtenerAusenciasPorTrabajador()
+    }
+    class PreferenciaDAO {
+        + agregarPreferencia()
+        + eliminarPreferencia()
+        + modificarPreferencia()
+        + obtenerTodasPreferencias()
+        + obtenerPreferenciasPorTrabajador()
+        + eliminarPreferenciasPorTrabajador()
+    }
+
+    class AsignacionDAO {
+        + agregarAsignacion()
+        + eliminarAsignacion()
+        + modificarAsignacion()
+        + eliminarAsignacionesPorTrabajador()
+        + eliminarAsignacionesPorTurno()
+        + obtenerTodasAsignaciones()
+        + obtenerAsignacionesPorTrabajador()
+        + obtenerAsignacionesPorTurno()
+        + obtenerAsignacionPorId()
+        + obtenerAsignacionesPorRangoFecha()
+        + obtenerAsignacionesPorFecha()
+        + initAgregarPosicionPanel()
+        + initEliminarPosicionPanel()
+        + initModificarPosicionPanel()
+        + initAgregarTurnoPanel()
+        + initEliminarTurnoPanel()
+        + initModificarTurnoPanel()
+
+
+    }
+}
+
+package "UI" #3498DB {
+    class TurnosGUI {
+        - GestorTurnos gestorTurnos
+        + initAgregarDepartamentoPanel()
+        + initEliminarDepartamentoPanel()
+        + initModificarDepartamentoPanel()
+        + initAgregarTrabajadorPanel()
+        + initEliminarTrabajadorPanel()
+        + initModificarTrabajadorPanel()
+    }
+    class AsignacionGUI {
+        - GestorTurnos gestorTurnos
+        + initVistaPanel()
+        + initGraficosPanel()
+    }
+}
+
+Departamento "1" -- "*" Trabajador : emplea >
+Departamento "1" -- "*" Posicion : gestiona >
+Trabajador "n" -- "1" Departamento : trabaja en >
+Trabajador -down-> "*" Ausencia : tiene >
+Trabajador -down-> "*" Preferencia : tiene >
+Trabajador -down-> "*" Asignacion : tiene asignado >
+Turno -down-> "*" Asignacion : incluye >
+Turno -down-> "*" Preferencia : es preferido por >
+Posicion -down-> "*" Asignacion : cubre >
+
+GestorTurnos -down-> DepartamentoDAO : persiste >
+GestorTurnos -down-> TrabajadorDAO : persiste >
+GestorTurnos -down-> PosicionDAO : persiste >
+GestorTurnos -down-> TurnoDAO : persiste >
+GestorTurnos -down-> AusenciaDAO : persiste >
+GestorTurnos -down-> PreferenciaDAO : persiste >
+GestorTurnos -down-> AsignacionDAO : persiste >
+
+DepartamentoDAO -down-> Departamento : almacena >
+TrabajadorDAO -down-> Trabajador : almacena >
+PosicionDAO -down-> Posicion : almacena >
+TurnoDAO -down-> Turno : almacena >
+AusenciaDAO -down-> Ausencia : almacena >
+PreferenciaDAO -down-> Preferencia : almacena >
+AsignacionDAO -down-> Asignacion : almacena >
+
+
+TurnosGUI -down-> GestorTurnos : usa >
+AsignacionGUI -down-> GestorTurnos : usa >
+
+note right of GestorTurnos
+    GestorTurnos usa todos los DAOs
+    para persistir los DTOs correspondientes.
+end note
+
+@enduml

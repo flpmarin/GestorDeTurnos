@@ -1,0 +1,78 @@
+@startuml
+
+entity "departamentos" as departamentos {
+  + id : INT
+  --
+  nombre : VARCHAR(100)
+}
+
+entity "trabajadores" as trabajadores {
+  + id : INT
+  --
+  nombre : VARCHAR(100)
+  departamento_id : INT
+}
+
+entity "turnos" as turnos {
+  + id : INT
+  --
+  turnoIdGrupo : INT
+  nombre : VARCHAR(100)
+  horaInicio : TIME
+  horaFin : TIME
+}
+
+entity "posiciones" as posiciones {
+  + id : INT
+  --
+  nombre : VARCHAR(100)
+  departamento_id : INT
+}
+
+entity "ausencias" as ausencias {
+  + trabajador_id : INT
+  + inicio : DATE
+  + fin : DATE
+  --
+  motivo : VARCHAR(100)
+}
+
+entity "asignaciones" as asignaciones {
+  + id : INT
+  --
+  fecha_inicio : DATE
+  fecha_fin : DATE
+  hora_inicio : TIME
+  hora_fin : TIME
+  trabajador_id : INT
+  turno_id : INT
+  posicion_id : INT
+}
+
+entity "preferencias" as preferencias {
+  + id : INT
+  --
+  descripcion : VARCHAR(100)
+  trabajador_id : INT
+  turno_id : INT
+}
+
+entity "trabajadores_posiciones" as trabajadores_posiciones {
+  + trabajador_id : INT
+  + posicion_id : INT
+}
+
+
+
+departamentos ||--o{ trabajadores : departamento_id
+departamentos ||--o{ posiciones : departamento_id
+trabajadores ||--o{ ausencias : trabajador_id
+trabajadores ||--o{ asignaciones : trabajador_id
+trabajadores ||--o{ preferencias : trabajador_id
+trabajadores ||..|| trabajadores_posiciones : trabajador_id
+turnos ||--o{ asignaciones : turno_id
+turnos ||--o{ preferencias : turno_id
+posiciones ||--o{ asignaciones : posicion_id
+posiciones ||..|| trabajadores_posiciones : posicion_id
+
+@enduml

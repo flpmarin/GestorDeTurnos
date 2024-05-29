@@ -1,8 +1,8 @@
 package com.turnos.ui;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -122,6 +122,7 @@ public class AsignacionGUI extends JFrame {
         DefaultTableModel tableModel = new DefaultTableModel();
         // Crea un JTable con el modelo de tabla
         JTable table = new JTable(tableModel);
+        table.setRowHeight(40);
         int totalRows = gestorTurnos.calcularCantidadPosiciones() * gestorTurnos.obtenerNumeroDeTurnosUnicos();
 
         JButton bGenerarColumna = new JButton("Generar columnas");
@@ -139,22 +140,57 @@ public class AsignacionGUI extends JFrame {
 
                 generarColumnasFecha(startDate, endDate, tableModel, totalRows);
 
-                // tableModel.addRow(new Object[] { "Trabajador 1", "01/01/2022", "Turno 1" });
-                // tableModel.addRow(new Object[] { "Trabajador 2", "02/01/2022", "Turno 2" });
-                // tableModel.addRow(new Object[] { "Trabajador 3", "03/01/2022", "Turno 3" });
-
                 // genera un mensaje de error si no se selecciona una fecha
                 table.setModel(tableModel);
             } else {
                 JOptionPane.showMessageDialog(null, "No se seleccionó ninguna fecha");
             }
         });
+        // Crea un JComboBox para los trabajadores
+        JComboBox<Trabajador> trabajadorComboBox = new JComboBox<>();
+
+        // Supongamos que 'asignarButton' es tu botón "Asignar"
+        JButton bAsignar = new JButton("Asignar");
+        bAsignar.addActionListener(e -> {
+            // Obtén el nombre del trabajador seleccionado en el JComboBox
+            Trabajador trabajadorSeleccionado = (Trabajador) trabajadorComboBox.getSelectedItem();
+            String trabajadorNombre = trabajadorSeleccionado.getNombre();
+            int departamentoId = trabajadorSeleccionado.getDepartamentoId();
+
+            // Obtén los índices de la fila y la columna seleccionados
+            int selectedRowIndex = table.getSelectedRow();
+            int selectedColumnIndex = table.getSelectedColumn();
+
+            // Comprueba si se seleccionó una celda
+            if (selectedRowIndex != -1 && selectedColumnIndex != -1) {
+                // Calcula el índice del turno
+                int cantidadPosiciones = gestorTurnos.calcularCantidadPosiciones();
+
+                // Calcula el id del grupo de turnos, se suma 1 porque los índices de las filas
+                // y columnas comienzan en 0
+                int turnoIdGrupo = selectedRowIndex / cantidadPosiciones + 1;
+
+                // Calcula el id de la posición, se suma 1 porque los índices de las filas
+                // comienzan en 0
+                int posicionId = selectedRowIndex % cantidadPosiciones + 1;
+
+                // Obtén la fecha del encabezado de la columna seleccionada
+                String fechaEncabezado = table.getColumnName(selectedColumnIndex);
+
+                // Si se seleccionó una celda, establece su valor al nombre del trabajador
+                tableModel.setValueAt(
+                        trabajadorNombre + " Dep " + departamentoId + " turnoIdGrupo: " + turnoIdGrupo + " posicionId: "
+                                + posicionId + " fecha: " + fechaEncabezado,
+                        selectedRowIndex,
+                        selectedColumnIndex);
+            } else {
+                // Si no se seleccionó ninguna celda, muestra un mensaje de error
+                JOptionPane.showMessageDialog(null, "No se seleccionó ninguna celda");
+            }
+        });
 
         // Añade la tabla a un JScrollPane
         JScrollPane scrollPane = new JScrollPane(table);
-
-        // Crea un JComboBox para los trabajadores
-        JComboBox<Trabajador> trabajadorComboBox = new JComboBox<>();
 
         // Añade cada trabajador del departamento al JComboBox
         for (Trabajador trabajador : gestorTurnos.obtenerTrabajadoresPorDepartamento(departamento.getId())) {
@@ -178,7 +214,8 @@ public class AsignacionGUI extends JFrame {
         add(scrollPane, BorderLayout.CENTER);
         panel.add(startDateChooser);
         panel.add(endDateChooser);
-        panel.add(bGenerarColumna); // Añade el botón de generarColum
+        panel.add(bGenerarColumna); // Añade el botón para generar columnasy filas
+        panel.add(bAsignar); // Añade el botón de asignar
 
         // Calcula la cantidad de posiciones
         int totalPositions = gestorTurnos.calcularCantidadPosiciones();
@@ -187,26 +224,36 @@ public class AsignacionGUI extends JFrame {
         Color[] colors = new Color[totalPositions];
         Random random = new Random();
         for (int i = 0; i < totalPositions; i++) {
-            float r = random.nextFloat();
-            float g = random.nextFloat();
-            float b = random.nextFloat();
+            float r = random.nextFloat() / 2f + 0.5f; // 0.5 y 1.0 color claro
+            float g = random.nextFloat() / 2f + 0.5f;
+            float b = random.nextFloat() / 2f + 0.5f;
             colors[i] = new Color(r, g, b);
         }
 
+        // Crea un JTextArea para personalizar el renderizador de la tabla, permite que el texto se ajuste al tamaño del JTextArea y se ajuste a las palabras completas.
+        JTextArea textArea = new JTextArea();
+        textArea.setLineWrap(true); // Ajusta el texto al tamaño del JTextArea
+        textArea.setWrapStyleWord(true); 
+
         // Personaliza el renderizador de la tabla
-        table.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
+        table.setDefaultRenderer(Object.class, new TableCellRenderer() {
             @Override
             public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
                     boolean hasFocus, int row, int column) {
-                Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+                textArea.setText((String) value);
 
                 // Calcula la posición de la fila
                 int position = row % colors.length;
 
                 // Cambia el color de la fila en función de la posición
-                c.setBackground(colors[position]);
+                textArea.setBackground(colors[position]);
 
-                return c;
+                // Si la celda está seleccionada, cambia su color de fondo
+                if (isSelected) {
+                    textArea.setBackground(table.getSelectionBackground());
+                }
+
+                return textArea;
             }
         });
 

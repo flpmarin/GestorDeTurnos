@@ -331,30 +331,33 @@ public class AsignacionGUI extends JFrame {
         JPanel asignacionPanel = new JPanel();
         asignacionPanel.add(new JLabel("Gráficos Panel"));
 
-        @SuppressWarnings("rawtypes")
-        DefaultPieDataset dataset = new DefaultPieDataset();
+        // Crea un conjunto de datos de pastel con los nombres de los departamentos y el número de trabajadores
+        @SuppressWarnings("rawtypes") // Se suprime la advertencia de tipo sin comprobación, ya que el tipo de datos es correcto en este caso
+        DefaultPieDataset dataset = new DefaultPieDataset(); // Se crea un conjunto de datos de pastel
 
-        // Supongamos que tienes una lista de todos los departamentos
+        // con una lista de todos los departamentos
         List<Departamento> departamentos = gestorTurnos.obtenerTodosDepartamentos();
 
         // Y una instancia de GestorTurnos
         GestorTurnos gestorTurnos = new GestorTurnos();
-
+        
+        // Itera sobre la lista de departamentos y añade el nombre y el número de trabajadores de cada departamento al conjunto de datos
         for (Departamento dept : departamentos) {
             int numTrabajadores = gestorTurnos.NumeroDeTrabajadoresPorDepartamento(dept.getId());
             dataset.setValue(dept.getNombre(), numTrabajadores);
         }
-
+        // Crea un gráfico de pastel con los datos del conjunto de datos y lo añade al panel
         JFreeChart chart = ChartFactory.createPieChart(
-                "Porcentaje de trabajadores por departamento",
-                dataset,
-                true, true, false);
+            "Porcentaje de trabajadores por departamento",dataset,
+            true, true, false
+        ); // el primer true es para mostrar la leyenda, el segundo true es para mostrar las etiquetas, el false es para no mostrar la URL
 
         PiePlot plot = (PiePlot) chart.getPlot();
+        // Personaliza las etiquetas del gráfico de pastel para mostrar el nombre, el valor y el porcentaje
         plot.setLabelGenerator(new StandardPieSectionLabelGenerator("{0} = {1} ({2})"));
 
         ChartPanel chartPanel = new ChartPanel(chart);
-        asignacionPanel.add(chartPanel);
+        asignacionPanel.add(chartPanel); // Añade el panel del gráfico al panel de asignación
         cards.add(asignacionPanel, "Graficos");
     }
 

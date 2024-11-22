@@ -1,4 +1,10 @@
 
+## Credits Gestor-Turnos
+- [Antonela Díaz](https://github.com/antoneladg91)
+- [Sergio Domínguez](https://github.com/DISTRONYX)
+- [Juan José Romero](https://github.com/juanjo2gm)
+- [Felipe Marín](http://github.com/flpmarin)
+
 # Proyecto Turnos
 
 ## Descripción
@@ -20,11 +26,7 @@ mvn clean install  # Compila el proyecto y descarga las dependencias
 mvn exec:java -Dexec.mainClass="com.turnos.TurnosMain.java"  # Ejecuta la aplicación principal
 ```
 
-## Credits Gestor-Turnos
-- [Antonela Díaz](https://github.com/antoneladg91)
-- [Sergio Domínguez](https://github.com/DISTRONYX)
-- [Juan José Romero](https://github.com/juanjo2gm)
-- [Felipe Marín](http://github.com/flpmarin)
+
 
 
 
